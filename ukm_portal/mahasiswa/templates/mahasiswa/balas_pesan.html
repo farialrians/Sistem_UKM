@@ -1,0 +1,30 @@
+{% extends 'base_mahasiswa.html' %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3>Balas Pesan dari {{ pesan_asli.pengirim.username }}</h3>
+    </div>
+    <div class="card-body">
+        <div class="chat-container">
+            <div class="chat-message received">
+                <div class="chat-bubble received">
+                    {{ pesan_asli.isi }}
+                </div>
+            </div>
+            <div class="chat-timestamp">
+                Diterima pada {{ pesan_asli.tanggal_kirim }}
+            </div>
+        </div>
+
+        <form method="post" class="mt-3">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="isi_balasan" class="form-label">Balasan Anda:</label>
+                <textarea class="form-control" id="isi_balasan" name="isi_balasan" rows="3" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Kirim Balasan</button>
+            <a href="{% url 'detail_pesan' pesan_asli.id %}" class="btn btn-secondary">Batal</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

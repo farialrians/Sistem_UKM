@@ -1,0 +1,307 @@
+{% extends 'base_admin.html' %}
+{% load static %}
+{% load tz %}
+
+{% block title %}Semua Pesan - Admin UKM Portal{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --neumorphic-bg: #e6e9ef;
+        --neumorphic-light-shadow: rgba(255, 255, 255, 0.8);
+        --neumorphic-dark-shadow: rgba(163, 177, 198, 0.7);
+        --neumorphic-text-primary: #2d3748;
+        --neumorphic-text-secondary: #718096;
+        --neumorphic-accent: #4a6cf7;
+        --neumorphic-radius: 16px;
+    }
+    
+    body {
+        background-color: var(--neumorphic-bg);
+        color: var(--neumorphic-text-primary);
+    }
+    
+    .container-fluid {
+        padding: 2rem;
+    }
+    
+    h3 {
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        color: var(--neumorphic-text-primary);
+    }
+    
+    .neu-card {
+        border-radius: var(--neumorphic-radius);
+        background-color: var(--neumorphic-bg);
+        box-shadow: 
+            8px 8px 16px var(--neumorphic-dark-shadow),
+            -8px -8px 16px var(--neumorphic-light-shadow);
+        border: none;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        margin-bottom: 2rem;
+    }
+    
+    .neu-inset {
+        border-radius: var(--neumorphic-radius);
+        background-color: var(--neumorphic-bg);
+        box-shadow: 
+            inset 4px 4px 8px var(--neumorphic-dark-shadow),
+            inset -4px -4px 8px var(--neumorphic-light-shadow);
+        border: none;
+    }
+    
+    .search-form {
+        padding: 0.7rem;
+    }
+    
+    .neu-input {
+        background-color: transparent;
+        border: none;
+        box-shadow: 
+            inset 4px 4px 8px var(--neumorphic-dark-shadow),
+            inset -4px -4px 8px var(--neumorphic-light-shadow);
+        border-radius: var(--neumorphic-radius);
+        padding: 1rem 1.2rem;
+        color: var(--neumorphic-text-primary);
+        transition: all 0.3s ease;
+    }
+    
+    .neu-input:focus {
+        outline: none;
+        box-shadow: 
+            inset 6px 6px 10px var(--neumorphic-dark-shadow),
+            inset -6px -6px 10px var(--neumorphic-light-shadow);
+    }
+    
+    .neu-button {
+        background-color: var(--neumorphic-bg);
+        border: none;
+        box-shadow: 
+            5px 5px 10px var(--neumorphic-dark-shadow),
+            -5px -5px 10px var(--neumorphic-light-shadow);
+        border-radius: 50%;
+        width: 45px;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 1rem;
+        color: var(--neumorphic-text-primary);
+        transition: all 0.3s ease;
+    }
+    
+    .neu-button:hover {
+        box-shadow: 
+            3px 3px 6px var(--neumorphic-dark-shadow),
+            -3px -3px 6px var(--neumorphic-light-shadow);
+        transform: translateY(-2px);
+    }
+    
+    .neu-button:active {
+        box-shadow: 
+            inset 3px 3px 6px var(--neumorphic-dark-shadow),
+            inset -3px -3px 6px var(--neumorphic-light-shadow);
+        transform: translateY(0);
+    }
+    
+    .message-list-item {
+        display: flex;
+        align-items: center;
+        padding: 1.2rem 1.5rem;
+        border-bottom: 1px solid rgba(163, 177, 198, 0.1);
+        text-decoration: none;
+        color: inherit;
+        transition: all 0.3s ease;
+    }
+    
+    .message-list-item:last-child {
+        border-bottom: none;
+    }
+    
+    .message-list-item:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+    }
+    
+    .message-list-item:active {
+        transform: translateY(0);
+    }
+    
+    .message-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: var(--neumorphic-bg);
+        color: var(--neumorphic-accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-right: 1.2rem;
+        flex-shrink: 0;
+        box-shadow: 
+            5px 5px 10px var(--neumorphic-dark-shadow),
+            -5px -5px 10px var(--neumorphic-light-shadow);
+    }
+    
+    .message-content {
+        flex-grow: 1;
+        overflow: hidden;
+        margin-right: 1.2rem;
+    }
+    
+    .message-sender {
+        font-weight: 600;
+        color: var(--neumorphic-text-primary);
+        margin-bottom: 0.3rem;
+        font-size: 1.05rem;
+    }
+    
+    .message-snippet {
+        font-size: 0.95rem;
+        color: var(--neumorphic-text-secondary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .message-meta {
+        text-align: right;
+        font-size: 0.85rem;
+        color: var(--neumorphic-text-secondary);
+        flex-shrink: 0;
+        min-width: 70px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+    }
+    
+    .unread-indicator {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        background-color: var(--neumorphic-accent);
+        border-radius: 50%;
+        margin-top: 0.5rem;
+        box-shadow: 0 0 8px var(--neumorphic-accent);
+    }
+    
+    .message-list-item.read .unread-indicator {
+        background-color: var(--neumorphic-bg);
+        box-shadow: 
+            inset 2px 2px 4px var(--neumorphic-dark-shadow),
+            inset -2px -2px 4px var(--neumorphic-light-shadow);
+    }
+    
+    .message-list-item.read .message-sender,
+    .message-list-item.read .message-snippet {
+        font-weight: normal;
+        color: var(--neumorphic-text-secondary);
+    }
+    
+    .empty-state {
+        padding: 3rem;
+        text-align: center;
+    }
+    
+    .empty-state i {
+        font-size: 3.5rem;
+        color: var(--neumorphic-text-secondary);
+        margin-bottom: 1.5rem;
+        display: inline-block;
+        padding: 2rem;
+        border-radius: 50%;
+        box-shadow: 
+            5px 5px 10px var(--neumorphic-dark-shadow),
+            -5px -5px 10px var(--neumorphic-light-shadow);
+    }
+    
+    .empty-state p {
+        font-size: 1.1rem;
+        color: var(--neumorphic-text-secondary);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h3 class="mb-4">Kotak Masuk</h3>
+
+    <!-- Form Pencarian -->
+    <div class="neu-card mb-4">
+        <div class="search-form">
+            <form method="get" action="{% url 'semua_pesan' %}">
+                <div class="d-flex align-items-center">
+                    <input type="text" class="neu-input form-control" name="q" placeholder="Cari nama pengirim atau isi pesan..." value="{{ query|default:'' }}">
+                    <button class="neu-button" type="submit"><i class="fas fa-search"></i></button>
+                    {% if query %}
+                    <a href="{% url 'semua_pesan' %}" class="neu-button" title="Hapus Filter"><i class="fas fa-times"></i></a>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Daftar Pesan -->
+    <div class="neu-card">
+        {% if threads %}
+            <div class="message-list">
+                {% for thread in threads %}
+                    {% comment %} Tentukan siapa lawan bicara {% endcomment %}
+                    {% if thread.pengirim == request.user %}
+                        {% with lawan_bicara=thread.penerima %}
+                            <a href="{% url 'balas_pesan_admin' thread.id %}" class="message-list-item {% if not thread.has_unread %}read{% endif %}">
+                                {# Avatar/Inisial Lawan Bicara #}
+                                <div class="message-avatar">
+                                    {{ lawan_bicara.first_name|slice:':1'|default:lawan_bicara.username|slice:':1'|upper }}
+                                </div>
+                                {# Konten Pesan #}
+                                <div class="message-content">
+                                    <div class="message-sender">{{ lawan_bicara.get_full_name|default:lawan_bicara.username }}</div>
+                                    <div class="message-snippet">{{ thread.last_message_isi|truncatewords:10 }}</div>
+                                </div>
+                                {# Meta (Timestamp & Unread) #}
+                                <div class="message-meta">
+                                    {% localtime on %}
+                                        {{ thread.last_message_time|timesince }}
+                                    {% endlocaltime %}
+                                    <div class="unread-indicator"></div>
+                                </div>
+                            </a>
+                        {% endwith %}
+                    {% else %}
+                        {% with lawan_bicara=thread.pengirim %}
+                            <a href="{% url 'balas_pesan_admin' thread.id %}" class="message-list-item {% if not thread.has_unread %}read{% endif %}">
+                                {# Avatar/Inisial Lawan Bicara #}
+                                <div class="message-avatar">
+                                    {{ lawan_bicara.first_name|slice:':1'|default:lawan_bicara.username|slice:':1'|upper }}
+                                </div>
+                                {# Konten Pesan #}
+                                <div class="message-content">
+                                    <div class="message-sender">{{ lawan_bicara.get_full_name|default:lawan_bicara.username }}</div>
+                                    <div class="message-snippet">{{ thread.last_message_isi|truncatewords:10 }}</div>
+                                </div>
+                                {# Meta (Timestamp & Unread) #}
+                                <div class="message-meta">
+                                    {% localtime on %}
+                                        {{ thread.last_message_time|timesince }}
+                                    {% endlocaltime %}
+                                    <div class="unread-indicator"></div>
+                                </div>
+                            </a>
+                        {% endwith %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <i class="fas fa-inbox"></i>
+                <p>Tidak ada pesan saat ini.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

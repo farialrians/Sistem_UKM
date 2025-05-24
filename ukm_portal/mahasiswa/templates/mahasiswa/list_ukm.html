@@ -1,0 +1,538 @@
+{% extends 'base_mahasiswa.html' %}
+{% block extra_css %}
+<style>
+    /* Neumorphism (Soft UI) Styling for UKM Listing Page */
+    :root {
+        --background: #e0e5ec;
+        --text-dark: #2d3436;
+        --text-light: #636e72;
+        --primary: #4361ee;
+        --primary-light: #4895ef;
+        --success: #2ecc71;
+        --danger: #e74c3c;
+        --neu-dark-shadow: rgba(163, 177, 198, 0.6);
+        --neu-light-shadow: rgba(255, 255, 255, 0.8);
+        --border-radius: 16px;
+        --transition: all 0.3s ease;
+    }
+    
+    body {
+        background-color: var(--background);
+        color: var(--text-dark);
+    }
+    
+    /* Page Header */
+    .page-header {
+        padding: 3rem 0 2rem;
+        text-align: center;
+        position: relative;
+    }
+    
+    .page-header h1 {
+        font-size: 2.4rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: var(--text-dark);
+        letter-spacing: -0.5px;
+    }
+    
+    .page-header p {
+        font-size: 1.1rem;
+        color: var(--text-light);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .header-shape {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: var(--background);
+        box-shadow: 8px 8px 16px var(--neu-dark-shadow), 
+                    -8px -8px 16px var(--neu-light-shadow);
+        position: absolute;
+        z-index: -1;
+    }
+    
+    .header-shape:nth-child(1) {
+        top: 10%;
+        left: 15%;
+        width: 60px;
+        height: 60px;
+    }
+    
+    .header-shape:nth-child(2) {
+        bottom: 20%;
+        right: 15%;
+        width: 80px;
+        height: 80px;
+    }
+    
+    /* Search and Filter */
+    .search-filter-bar {
+        background: var(--background);
+        padding: 2rem;
+        border-radius: var(--border-radius);
+        margin-bottom: 3rem;
+        box-shadow: 8px 8px 16px var(--neu-dark-shadow), 
+                    -8px -8px 16px var(--neu-light-shadow);
+    }
+    
+    .form-control {
+        background: var(--background);
+        border: none;
+        border-radius: 12px;
+        padding: 1rem 1.25rem;
+        font-size: 1rem;
+        box-shadow: inset 2px 2px 5px var(--neu-dark-shadow), 
+                    inset -2px -2px 5px var(--neu-light-shadow);
+        transition: var(--transition);
+    }
+    
+    .form-control:focus {
+        outline: none;
+        box-shadow: inset 4px 4px 8px var(--neu-dark-shadow), 
+                    inset -4px -4px 8px var(--neu-light-shadow);
+    }
+    
+    .input-group-text {
+        background: var(--background);
+        border: none;
+        border-radius: 12px 0 0 12px;
+        padding-left: 1.25rem;
+        box-shadow: inset 2px 2px 5px var(--neu-dark-shadow), 
+                    inset -2px -2px 5px var(--neu-light-shadow);
+    }
+    
+    .btn {
+        font-weight: 600;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        border: none;
+        transition: var(--transition);
+        box-shadow: 5px 5px 10px var(--neu-dark-shadow), 
+                    -5px -5px 10px var(--neu-light-shadow);
+    }
+    
+    .btn:hover {
+        box-shadow: 3px 3px 6px var(--neu-dark-shadow), 
+                    -3px -3px 6px var(--neu-light-shadow);
+    }
+    
+    .btn:active {
+        box-shadow: inset 2px 2px 5px var(--neu-dark-shadow), 
+                    inset -2px -2px 5px var(--neu-light-shadow);
+    }
+    
+    .btn-primary {
+        background: linear-gradient(145deg, #3D57D6, #4361EE);
+        color: white;
+    }
+    
+    /* UKM Cards */
+    .ukm-card {
+        background: var(--background);
+        border: none;
+        border-radius: var(--border-radius);
+        box-shadow: 8px 8px 16px var(--neu-dark-shadow), 
+                    -8px -8px 16px var(--neu-light-shadow);
+        transition: var(--transition);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .ukm-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .ukm-card-img-wrapper {
+        position: relative;
+        height: 180px;
+        overflow: hidden;
+        border-radius: var(--border-radius) var(--border-radius) 0 0;
+    }
+    
+    .ukm-card-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: var(--transition);
+    }
+    
+    .ukm-card:hover .ukm-card-img {
+        transform: scale(1.05);
+    }
+    
+    .ukm-card-body {
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+    
+    .ukm-card-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: var(--text-dark);
+        letter-spacing: -0.5px;
+    }
+    
+    .ukm-card-text {
+        font-size: 1rem;
+        color: var(--text-light);
+        margin-bottom: 1.25rem;
+        line-height: 1.6;
+    }
+    
+    .ukm-card-period {
+        font-size: 0.95rem;
+        color: var(--text-light);
+        margin-bottom: 1.25rem;
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1.25rem;
+        border-radius: 30px;
+        background: var(--background);
+        box-shadow: inset 2px 2px 5px var(--neu-dark-shadow), 
+                    inset -2px -2px 5px var(--neu-light-shadow);
+        width: fit-content;
+    }
+    
+    .ukm-card-period i {
+        margin-right: 0.75rem;
+        color: var(--primary);
+    }
+    
+    .ukm-card-status {
+        font-size: 0.9rem;
+        padding: 0.75rem 1.25rem;
+        border-radius: 30px;
+        display: inline-block;
+        margin-bottom: 1.5rem;
+        font-weight: 600;
+        background: var(--background);
+        width: fit-content;
+    }
+    
+    .status-open {
+        color: var(--success);
+        box-shadow: inset 2px 2px 5px var(--neu-dark-shadow), 
+                    inset -2px -2px 5px var(--neu-light-shadow),
+                    0 0 8px rgba(46, 204, 113, 0.3);
+    }
+    
+    .status-closed {
+        color: var(--danger);
+        box-shadow: inset 2px 2px 5px var(--neu-dark-shadow), 
+                    inset -2px -2px 5px var(--neu-light-shadow),
+                    0 0 8px rgba(231, 76, 60, 0.3);
+    }
+    
+    .card-actions {
+        margin-top: auto;
+        display: flex;
+        gap: 1rem;
+    }
+    
+    .btn-success {
+        background: linear-gradient(145deg, #28B463, #2ECC71);
+        color: white;
+    }
+    
+    .btn-success.disabled {
+        background: linear-gradient(145deg, #95a5a6, #bdc3c7);
+        opacity: 0.7;
+    }
+    
+    .btn-info {
+        background: var(--background);
+        color: var(--text-dark);
+    }
+    
+    .btn-info:hover {
+        color: var(--primary);
+    }
+    
+    /* Empty State */
+    .empty-state {
+        padding: 4rem 0;
+        text-align: center;
+        background: var(--background);
+        border-radius: var(--border-radius);
+        box-shadow: 8px 8px 16px var(--neu-dark-shadow), 
+                    -8px -8px 16px var(--neu-light-shadow);
+    }
+    
+    .empty-state i {
+        font-size: 4rem;
+        color: var(--text-light);
+        margin-bottom: 1.5rem;
+        padding: 2rem;
+        border-radius: 50%;
+        background: var(--background);
+        box-shadow: 5px 5px 10px var(--neu-dark-shadow), 
+                    -5px -5px 10px var(--neu-light-shadow);
+        display: inline-block;
+    }
+    
+    .empty-state p {
+        font-size: 1.2rem;
+        color: var(--text-light);
+        margin-top: 1.5rem;
+    }
+    
+    /* Pagination */
+    .pagination-container {
+        margin-top: 3.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .pagination {
+        background: var(--background);
+        padding: 0.75rem;
+        border-radius: 50px;
+        display: inline-flex;
+        box-shadow: 5px 5px 10px var(--neu-dark-shadow), 
+                    -5px -5px 10px var(--neu-light-shadow);
+    }
+    
+    .page-item {
+        margin: 0 0.25rem;
+    }
+    
+    .page-link {
+        border-radius: 50px;
+        border: none;
+        background: var(--background);
+        color: var(--text-dark);
+        min-width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: var(--transition);
+        box-shadow: 3px 3px 6px var(--neu-dark-shadow), 
+                    -3px -3px 6px var(--neu-light-shadow);
+    }
+    
+    .page-item.active .page-link {
+        background: linear-gradient(145deg, #3D57D6, #4361EE);
+        color: white;
+        box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.2), 
+                    inset -1px -1px 3px rgba(255, 255, 255, 0.3);
+    }
+    
+    .page-link:hover {
+        background: var(--background);
+        color: var(--primary);
+        z-index: 1;
+    }
+    
+    .page-item.disabled .page-link {
+        opacity: 0.5;
+    }
+    
+    /* Animation */
+    .fade-in-up {
+        animation: fadeInUp 0.7s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Staggered animation for cards */
+    .card-stagger {
+        opacity: 0;
+    }
+    
+    .card-stagger:nth-child(1) { animation: fadeInUp 0.6s 0.1s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+    .card-stagger:nth-child(2) { animation: fadeInUp 0.6s 0.2s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+    .card-stagger:nth-child(3) { animation: fadeInUp 0.6s 0.3s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+    .card-stagger:nth-child(4) { animation: fadeInUp 0.6s 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+    .card-stagger:nth-child(5) { animation: fadeInUp 0.6s 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+    .card-stagger:nth-child(6) { animation: fadeInUp 0.6s 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+    
+    /* Custom Select Styling */
+    select.form-control {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23636e72' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        padding-right: 2.5rem;
+    }
+    
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+        .page-header {
+            padding: 2rem 0;
+        }
+        
+        .page-header h1 {
+            font-size: 2rem;
+        }
+        
+        .search-filter-bar {
+            padding: 1.5rem;
+        }
+        
+        .ukm-card-img-wrapper {
+            height: 160px;
+        }
+        
+        .ukm-card-body {
+            padding: 1.5rem;
+        }
+        
+        .header-shape {
+            display: none;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Header Halaman with Decorative Elements -->
+<div class="page-header fade-in-up">
+    <div class="header-shape"></div>
+    <div class="header-shape"></div>
+    <h1>Daftar UKM</h1>
+    <p>Temukan UKM yang sesuai dengan minat Anda dan daftar sekarang!</p>
+</div>
+
+<!-- Search dan Filter Bar -->
+<div class="container">
+    <div class="search-filter-bar fade-in-up">
+        <form method="get" class="row g-4 align-items-center">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fas fa-search text-muted"></i>
+                    </span>
+                    <input type="text" name="q" class="form-control" placeholder="Cari UKM..." value="{{ query }}">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <select name="status" class="form-control">
+                    <option value="all" {% if status_filter == 'all' %}selected{% endif %}>Semua UKM</option>
+                    <option value="open" {% if status_filter == 'open' %}selected{% endif %}>Membuka Pendaftaran</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-filter me-2"></i> Filter
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Daftar UKM -->
+    <div class="row g-4">
+        {% if page_obj %}
+            {% for ukm in page_obj %}
+                <div class="col-md-6 col-lg-4 card-stagger">
+                    <div class="ukm-card">
+                        <div class="ukm-card-img-wrapper">
+                            {% if ukm.logo %}
+                                <img src="{{ ukm.logo.url }}" alt="{{ ukm.nama }}" class="ukm-card-img">
+                            {% else %}
+                                <div class="ukm-card-img d-flex align-items-center justify-content-center">
+                                    <i class="fas fa-users fa-3x text-muted opacity-50"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="ukm-card-body">
+                            <h5 class="ukm-card-title">{{ ukm.nama }}</h5>
+                            <p class="ukm-card-text">{{ ukm.deskripsi|truncatewords:15 }}</p>
+                            <p class="ukm-card-period">
+                                <i class="far fa-calendar-alt"></i>
+                                {{ ukm.periode_pendaftaran_mulai|date:"d M Y" }} - {{ ukm.periode_pendaftaran_selesai|date:"d M Y" }}
+                            </p>
+                            <span class="ukm-card-status {% if ukm.is_open %}status-open{% else %}status-closed{% endif %}">
+                                {% if ukm.is_open %}
+                                    <i class="fas fa-circle-check me-2"></i> Membuka Pendaftaran
+                                {% else %}
+                                    <i class="fas fa-circle-xmark me-2"></i> Pendaftaran Ditutup
+                                {% endif %}
+                            </span>
+                            <div class="card-actions">
+                                <a href="{% url 'detail_ukm' ukm.id %}" class="btn btn-info flex-fill">
+                                    <i class="fas fa-info-circle me-2"></i> Detail
+                                </a>
+                                <a href="{% url 'daftar_ukm' ukm.id %}" class="btn btn-success flex-fill {% if not ukm.is_open %}disabled{% endif %}">
+                                    <i class="fas fa-user-plus me-2"></i> Daftar
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <div class="empty-state">
+                    <i class="fas fa-search"></i>
+                    <p>Tidak ada UKM yang ditemukan.</p>
+                    <a href="{% url 'list_ukm' %}" class="btn btn-primary mt-3">
+                        <i class="fas fa-sync-alt me-2"></i> Reset Pencarian
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <div class="d-flex justify-content-center pagination-container">
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if status_filter != 'all' %}&status={{ status_filter }}{% endif %}" aria-label="Previous">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                    </li>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                    <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                        <a class="page-link" href="?page={{ num }}{% if query %}&q={{ query }}{% endif %}{% if status_filter != 'all' %}&status={{ status_filter }}{% endif %}">{{ num }}</a>
+                    </li>
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if status_filter != 'all' %}&status={{ status_filter }}{% endif %}" aria-label="Next">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

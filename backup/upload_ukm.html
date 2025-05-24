@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{{ form.media }}
+
+<div class="card">
+    <div class="card-header">
+        <h3>Unggah Info UKM</h3>
+    </div>
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <h5>Informasi Umum</h5>
+            <div class="mb-3">
+                <label for="id_nama" class="form-label">Nama UKM</label>
+                {{ form.nama }}
+            </div>
+            <div class="mb-3">
+                <label for="id_logo" class="form-label">Logo UKM</label>
+                {{ form.logo }}
+            </div>
+            <div class="mb-3">
+                <label for="id_deskripsi_singkat" class="form-label">Deskripsi Singkat</label>
+                {{ form.deskripsi_singkat }}
+            </div>
+
+            <h5>Visi & Misi</h5>
+            <div class="mb-3">
+                <label for="id_visi" class="form-label">Visi</label>
+                {{ form.visi }}
+            </div>
+            <div class="mb-3">
+                <label for="id_misi" class="form-label">Misi</label>
+                {{ form.misi }}
+            </div>
+
+            <h5>Kegiatan dan Program Kerja</h5>
+            <div class="mb-3">
+                <label for="id_jenis_kegiatan" class="form-label">Jenis Kegiatan</label>
+                {{ form.jenis_kegiatan }}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Jadwal Kegiatan</label>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label for="id_hari_mulai" class="form-label">Hari Mulai</label>
+                        {{ form.hari_mulai }}
+                    </div>
+                    <div class="col-md-3">
+                        <label for="id_hari_selesai" class="form-label">Hari Selesai</label>
+                        {{ form.hari_selesai }}
+                    </div>
+                    <div class="col-md-3">
+                        <label for="id_waktu_mulai" class="form-label">Waktu Mulai</label>
+                        {{ form.waktu_mulai }}
+                    </div>
+                    <div class="col-md-3">
+                        <label for="id_waktu_selesai" class="form-label">Waktu Selesai</label>
+                        {{ form.waktu_selesai }}
+                    </div>
+                </div>
+            </div>
+
+            <h5>Struktur Organisasi</h5>
+            <div class="mb-3">
+                <label for="id_ketua_ukm" class="form-label">Ketua UKM</label>
+                {{ form.ketua_ukm }}
+            </div>
+            <div class="mb-3">
+                <label for="id_pengurus_pendaftaran" class="form-label">Pengurus Pendaftaran</label>
+                {{ form.pengurus_pendaftaran }}
+            </div>
+
+            <h5>Syarat & Ketentuan Pendaftaran</h5>
+            <div class="mb-3">
+                <label for="id_persyaratan_umum" class="form-label">Persyaratan Umum</label>
+                {{ form.persyaratan_umum }}
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Berkas yang Dibutuhkan</label>
+                <div class="checkbox-container">
+                    {{ form.berkas_dibutuhkan }}
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Alur Pendaftaran</label>
+                <div class="checkbox-container">
+                    {{ form.alur_pendaftaran }}
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Simpan</button>
+            <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">Kembali</a>
+        </form>
+    </div>
+</div>
+
+<style>
+    .checkbox-container ul {
+        list-style: none;
+        padding-left: 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .checkbox-container li {
+        flex: 1 1 30%;
+        margin-bottom: 10px;
+    }
+
+    .checkbox-container label {
+        margin-left: 5px;
+    }
+
+    /* Styling tambahan untuk time picker */
+    .time-picker {
+        cursor: pointer;
+    }
+</style>
+
+<!-- Tambahkan script ini untuk time picker yang lebih menarik -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Jika ingin menggunakan HTML5 time input native
+        // Ini sudah cukup untuk sebagian besar browser modern
+
+        // Fallback jika browser tidak mendukung input type="time"
+        var isTimeInputSupported = function () {
+            var input = document.createElement('input');
+            input.setAttribute('type', 'time');
+            return input.type === 'time';
+        };
+
+        if (!isTimeInputSupported()) {
+            console.log('Browser tidak mendukung input type="time", perlu tambahan library time picker');
+            // Di sini Anda bisa menambahkan fallback dengan library seperti flatpickr atau jquery.timepicker
+        }
+    });
+</script>
+{% endblock %}

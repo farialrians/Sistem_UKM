@@ -1,0 +1,552 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    :root {
+        --background: #e0e5ec;
+        --text-color: #4d4d4d;
+        --shadow-light: #ffffff;
+        --shadow-dark: #a3b1c6;
+        --primary: #6b8afd;
+        --primary-dark: #5a7aed;
+        --error: #ff6b6b;
+        --success: #51cf66;
+        --border-radius: 16px;
+    }
+    
+    body {
+        background-color: var(--background);
+        font-family: 'Poppins', 'Segoe UI', sans-serif;
+        color: var(--text-color);
+    }
+    
+    .neumorphic-card {
+        max-width: 550px;
+        margin: 50px auto;
+        background-color: var(--background);
+        border-radius: var(--border-radius);
+        box-shadow: 8px 8px 16px var(--shadow-dark), 
+                   -8px -8px 16px var(--shadow-light);
+        padding: 30px;
+        transition: all 0.3s ease;
+    }
+    
+    .neumorphic-card-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    
+    .neumorphic-card-header h3 {
+        color: var(--text-color);
+        font-weight: 600;
+        font-size: 26px;
+        margin: 0;
+    }
+    
+    /* Tabs styling */
+    .tab-container {
+        display: flex;
+        margin-bottom: 30px;
+        border-radius: var(--border-radius);
+        box-shadow: inset 4px 4px 8px var(--shadow-dark), 
+                   inset -4px -4px 8px var(--shadow-light);
+        padding: 5px;
+    }
+    
+    .tab {
+        flex: 1;
+        text-align: center;
+        padding: 12px 15px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border-radius: 12px;
+        font-weight: 500;
+        position: relative;
+    }
+    
+    .tab.active {
+        background-color: var(--background);
+        box-shadow: 4px 4px 8px var(--shadow-dark), 
+                   -4px -4px 8px var(--shadow-light);
+    }
+    
+    .tab-content {
+        display: none;
+    }
+    
+    .tab-content.active {
+        display: block;
+    }
+    
+    /* Icon in input field */
+    .input-icon-wrapper {
+        position: relative;
+    }
+    
+    .input-icon {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 16px;
+        height: 16px;
+        z-index: 1;
+        color: var(--primary);
+    }
+    
+    .with-icon {
+        padding-left: 40px !important;
+    }
+    
+    .neumorphic-input-group {
+        margin-bottom: 25px;
+        position: relative;
+    }
+    
+    .neumorphic-label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: 500;
+        color: var(--text-color);
+        font-size: 14px;
+    }
+    
+    .field-description {
+        font-size: 12px;
+        color: #757575;
+        margin-top: 5px;
+        margin-bottom: 8px;
+    }
+    
+    .neumorphic-input {
+        width: 100%;
+        padding: 14px 15px;
+        border: none;
+        background-color: var(--background);
+        color: var(--text-color);
+        border-radius: 12px;
+        box-shadow: inset 4px 4px 8px var(--shadow-dark), 
+                   inset -4px -4px 8px var(--shadow-light);
+        outline: none;
+        transition: all 0.3s ease;
+    }
+    
+    .neumorphic-input:focus {
+        box-shadow: inset 6px 6px 10px var(--shadow-dark), 
+                   inset -6px -6px 10px var(--shadow-light);
+    }
+    
+    .neumorphic-select {
+        width: 100%;
+        padding: 14px 15px;
+        border: none;
+        background-color: var(--background);
+        color: var(--text-color);
+        border-radius: 12px;
+        box-shadow: inset 4px 4px 8px var(--shadow-dark), 
+                   inset -4px -4px 8px var(--shadow-light);
+        outline: none;
+        transition: all 0.3s ease;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%234d4d4d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 15px center;
+        background-size: 16px;
+    }
+    
+    .neumorphic-button {
+        display: block;
+        width: 100%;
+        padding: 15px;
+        border: none;
+        background: var(--primary);
+        color: white;
+        border-radius: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 4px 4px 8px var(--shadow-dark), 
+                   -4px -4px 8px var(--shadow-light);
+        transition: all 0.3s ease;
+        margin-top: 15px;
+    }
+    
+    .neumorphic-button:hover {
+        background: var(--primary-dark);
+    }
+    
+    .neumorphic-button:active {
+        box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.2), 
+                   inset -4px -4px 8px rgba(255, 255, 255, 0.1);
+    }
+    
+    .tab-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+    }
+    
+    .next-button, .prev-button {
+        width: 48%;
+        padding: 12px;
+    }
+    
+    .prev-button {
+        background: var(--background);
+        color: var(--text-color);
+    }
+    
+    .login-link {
+        text-align: center;
+        margin-top: 25px;
+        font-size: 14px;
+    }
+    
+    .login-link a {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .login-link a:hover {
+        color: var(--primary-dark);
+    }
+    
+    .alert {
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 12px;
+        font-size: 14px;
+        box-shadow: inset 4px 4px 8px var(--shadow-dark), 
+                   inset -4px -4px 8px var(--shadow-light);
+    }
+    
+    .alert-error, .alert-danger {
+        background-color: rgba(255, 107, 107, 0.1);
+        color: var(--error);
+    }
+    
+    .alert-success {
+        background-color: rgba(81, 207, 102, 0.1);
+        color: var(--success);
+    }
+    
+    .error-text {
+        color: var(--error);
+        font-size: 12px;
+        margin-top: 5px;
+        padding-left: 5px;
+    }
+    
+    .progress-bar {
+        width: 100%;
+        height: 6px;
+        background: var(--background);
+        border-radius: 3px;
+        margin-bottom: 25px;
+        box-shadow: inset 2px 2px 4px var(--shadow-dark), 
+                   inset -2px -2px 4px var(--shadow-light);
+        overflow: hidden;
+    }
+    
+    .progress {
+        height: 100%;
+        background: var(--primary);
+        border-radius: 3px;
+        transition: width 0.3s ease;
+    }
+    
+    /* Customize Django form fields */
+    #id_username, #id_npm, #id_email, #id_nama, 
+    #id_fakultas, #id_angkatan, #id_password1, #id_password2 {
+        width: 100%;
+        padding: 14px 15px;
+        border: none;
+        background-color: var(--background);
+        color: var(--text-color);
+        border-radius: 12px;
+        box-shadow: inset 4px 4px 8px var(--shadow-dark), 
+                   inset -4px -4px 8px var(--shadow-light);
+        outline: none;
+        transition: all 0.3s ease;
+    }
+    
+    select#id_fakultas, select#id_angkatan {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%234d4d4d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 15px center;
+        background-size: 16px;
+    }
+    
+    /* For validation errors */
+    .errorlist {
+        list-style: none;
+        padding: 0;
+        margin: 5px 0 0 0;
+        color: var(--error);
+        font-size: 12px;
+    }
+    
+    /* SVG Icons */
+    .form-icon {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        vertical-align: middle;
+        margin-right: 5px;
+    }
+</style>
+
+<div class="neumorphic-card">
+    <div class="neumorphic-card-header">
+        <h3>Registrasi Mahasiswa</h3>
+    </div>
+    
+    <div class="progress-bar">
+        <div class="progress" id="progress-indicator" style="width: 25%;"></div>
+    </div>
+    
+    <div class="tab-container">
+        <div class="tab active" data-tab="tab1">Akun</div>
+        <div class="tab" data-tab="tab2">Data Diri</div>
+        <div class="tab" data-tab="tab3">Akademik</div>
+        <div class="tab" data-tab="tab4">Password</div>
+    </div>
+    
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    
+    <form method="post" id="registration-form">
+        {% csrf_token %}
+        
+        <div class="tab-content active" id="tab1">
+            <div class="neumorphic-input-group">
+                <label for="id_username" class="neumorphic-label">
+                    <svg class="form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    Username
+                </label>
+                <div class="field-description">Nama pengguna untuk masuk ke sistem</div>
+                <div class="input-icon-wrapper">
+                    {{ form.username.as_widget }}
+                    {{ form.username.errors }}
+                </div>
+            </div>
+            
+            <div class="neumorphic-input-group">
+                <label for="id_email" class="neumorphic-label">
+                    <svg class="form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <polyline points="22,6 12,13 2,6"></polyline>
+                    </svg>
+                    Email
+                </label>
+                <div class="field-description">Email aktif untuk verifikasi dan notifikasi</div>
+                <div class="input-icon-wrapper">
+                    {{ form.email.as_widget }}
+                    {{ form.email.errors }}
+                </div>
+            </div>
+            
+            <div class="tab-buttons">
+                <button type="button" class="neumorphic-button next-button" data-next="tab2">Selanjutnya</button>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="tab2">
+            <div class="neumorphic-input-group">
+                <label for="id_nama" class="neumorphic-label">
+                    <svg class="form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                    Nama Lengkap
+                </label>
+                <div class="field-description">Nama lengkap sesuai dengan kartu identitas</div>
+                <div class="input-icon-wrapper">
+                    {{ form.nama.as_widget }}
+                    {{ form.nama.errors }}
+                </div>
+            </div>
+            
+            <div class="neumorphic-input-group">
+                <label for="id_npm" class="neumorphic-label">
+                    <svg class="form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="16" rx="2" ry="2"></rect>
+                        <circle cx="12" cy="10" r="3"></circle>
+                        <line x1="8" y1="16" x2="16" y2="16"></line>
+                    </svg>
+                    NPM (NIM)
+                </label>
+                
+                <div class="field-description">Nomor Pokok Mahasiswa atau Nomor Induk Mahasiswa</div>
+                <div class="input-icon-wrapper">
+                    {{ form.npm.as_widget }}
+                    {{ form.npm.errors }}
+                </div>
+            </div>
+            
+            <div class="tab-buttons">
+                <button type="button" class="neumorphic-button prev-button" data-prev="tab1">Kembali</button>
+                <button type="button" class="neumorphic-button next-button" data-next="tab3">Selanjutnya</button>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="tab3">
+            <div class="neumorphic-input-group">
+                <label for="id_fakultas" class="neumorphic-label">
+                    <svg class="form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 21V9l9-6 9 6v12H3z"></path>
+                        <path d="M9 21V12h6v9"></path>
+                        <path d="M9 6h6"></path>
+                    </svg>
+                    Fakultas
+                </label>
+                
+                <div class="field-description">Pilih fakultas tempat Anda belajar</div>
+                <div class="input-icon-wrapper">
+                    {{ form.fakultas.as_widget }}
+                    {{ form.fakultas.errors }}
+                </div>
+            </div>
+            
+            <div class="neumorphic-input-group">
+                <label for="id_angkatan" class="neumorphic-label">
+                    <svg class="form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="16" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                        <text x="12" y="18" font-size="4" text-anchor="middle">🎓</text>
+                    </svg>
+                    Angkatan
+                </label>
+                
+                <div class="field-description">Tahun angkatan masuk universitas</div>
+                <div class="input-icon-wrapper">
+                    {{ form.angkatan.as_widget }}
+                    {{ form.angkatan.errors }}
+                </div>
+            </div>
+            
+            <div class="tab-buttons">
+                <button type="button" class="neumorphic-button prev-button" data-prev="tab2">Kembali</button>
+                <button type="button" class="neumorphic-button next-button" data-next="tab4">Selanjutnya</button>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="tab4">
+            <div class="neumorphic-input-group">
+                <label for="id_password1" class="neumorphic-label">
+                    <svg class="form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                    Password
+                </label>
+                <div class="field-description">Minimal 8 karakter, gunakan kombinasi huruf dan angka</div>
+                <div class="input-icon-wrapper">
+                    {{ form.password1.as_widget }}
+                    {{ form.password1.errors }}
+                </div>
+            </div>
+            
+            <div class="neumorphic-input-group">
+                <label for="id_password2" class="neumorphic-label">
+                    <svg class="form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                    Konfirmasi Password
+                </label>
+                <div class="field-description">Masukkan kembali password untuk konfirmasi</div>
+                <div class="input-icon-wrapper">
+                    {{ form.password2.as_widget }}
+                    {{ form.password2.errors }}
+                </div>
+            </div>
+            
+            <div class="tab-buttons">
+                <button type="button" class="neumorphic-button prev-button" data-prev="tab3">Kembali</button>
+                <button type="submit" class="neumorphic-button next-button">Daftar</button>
+            </div>
+        </div>
+    </form>
+    
+    <div class="login-link">
+        <p>Sudah punya akun? <a href="{% url 'login_mahasiswa' %}">Login di sini</a></p>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Tab navigation
+    const tabs = document.querySelectorAll('.tab');
+    const tabContents = document.querySelectorAll('.tab-content');
+    const progressIndicator = document.getElementById('progress-indicator');
+    
+    // Progress percentages for each tab
+    const progressMap = {
+        'tab1': '25%',
+        'tab2': '50%',
+        'tab3': '75%',
+        'tab4': '100%'
+    };
+    
+    // Set active tab
+    function setActiveTab(tabId) {
+        // Update tab buttons
+        tabs.forEach(tab => {
+            if (tab.dataset.tab === tabId) {
+                tab.classList.add('active');
+            } else {
+                tab.classList.remove('active');
+            }
+        });
+        
+        // Update tab contents
+        tabContents.forEach(content => {
+            if (content.id === tabId) {
+                content.classList.add('active');
+                // Update progress bar
+                progressIndicator.style.width = progressMap[tabId];
+            } else {
+                content.classList.remove('active');
+            }
+        });
+    }
+    
+    // Tab click events
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            setActiveTab(tab.dataset.tab);
+        });
+    });
+    
+    // Next button functionality
+    const nextButtons = document.querySelectorAll('.next-button[data-next]');
+    nextButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const nextTab = button.dataset.next;
+            setActiveTab(nextTab);
+        });
+    });
+    
+    // Previous button functionality
+    const prevButtons = document.querySelectorAll('.prev-button[data-prev]');
+    prevButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const prevTab = button.dataset.prev;
+            setActiveTab(prevTab);
+        });
+    });
+});
+</script>
+{% endblock %}

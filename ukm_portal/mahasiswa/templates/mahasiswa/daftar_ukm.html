@@ -1,0 +1,384 @@
+{% extends 'base_mahasiswa.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Main Neumorphic Card with enhanced shadows and spacing -->
+            <div class="card border-0 p-0" style="background: #e0e5ec; border-radius: 24px; box-shadow: 10px 10px 20px rgba(163, 177, 198, 0.7), -10px -10px 20px rgba(255, 255, 255, 0.7);">
+                <div class="card-body p-4 p-md-5">
+                    <h2 class="card-title text-center mb-4" style="color: #445670; font-weight: 400; letter-spacing: 0.5px;">
+                        <span style="font-size: 1.1rem;">Pendaftaran UKM</span><br>
+                        <span class="fw-bold" style="color: #3d6cb9; font-size: 1.5rem;">{{ ukm.nama }}</span>
+                    </h2>
+
+                    {% if messages %}
+                        <div class="mb-4"> 
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} alert-dismissible fade show py-3" 
+                                     style="border: none; border-radius: 16px; box-shadow: inset 3px 3px 6px rgba(163, 177, 198, 0.5), inset -3px -3px 6px rgba(255, 255, 255, 0.8);" 
+                                     role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" 
+                                            style="text-shadow: none; box-shadow: none;"></button>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                        {% csrf_token %}
+
+                        <!-- Enhanced Neumorphic Nav Tabs -->
+                        <div class="neumorph-tabs-container mb-4" style="background: #e0e5ec; border-radius: 18px; padding: 8px; box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.5), inset -4px -4px 8px rgba(255, 255, 255, 0.8);">
+                            <ul class="nav nav-pills nav-fill" id="pendaftaranTab" role="tablist">
+                                <li class="nav-item mx-1" role="presentation">
+                                    <button class="nav-link active px-3 py-2" id="info-kontak-tab" data-bs-toggle="tab" data-bs-target="#info-kontak" type="button" role="tab" aria-controls="info-kontak" aria-selected="true"
+                                            style="border-radius: 14px; border: none; background: #e0e5ec; color: #445670; font-weight: 500; font-size: 0.85rem; box-shadow: none; transition: all 0.3s ease;">
+                                        <i class="bi bi-person-vcard me-2"></i>Profil
+                                    </button>
+                                </li>
+                                <li class="nav-item mx-1" role="presentation">
+                                    <button class="nav-link px-3 py-2" id="dokumen-wajib-tab" data-bs-toggle="tab" data-bs-target="#dokumen-wajib" type="button" role="tab" aria-controls="dokumen-wajib" aria-selected="false"
+                                            style="border-radius: 14px; border: none; background: #e0e5ec; color: #445670; font-weight: 500; font-size: 0.85rem; transition: all 0.3s ease;">
+                                        <i class="bi bi-file-earmark-check me-2"></i>Dokumen Wajib
+                                    </button>
+                                </li>
+                                <li class="nav-item mx-1" role="presentation">
+                                    <button class="nav-link px-3 py-2" id="dokumen-lainnya-tab" data-bs-toggle="tab" data-bs-target="#dokumen-lainnya" type="button" role="tab" aria-controls="dokumen-lainnya" aria-selected="false"
+                                            style="border-radius: 14px; border: none; background: #e0e5ec; color: #445670; font-weight: 500; font-size: 0.85rem; transition: all 0.3s ease;">
+                                        <i class="bi bi-file-earmark-plus me-2"></i>Lainnya
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Enhanced Tab Content with better spacing and visual hierarchy -->
+                        <div class="tab-content pt-2" id="pendaftaranTabContent">
+
+                            <!-- Tab 1: Enhanced Information Layout -->
+                            <div class="tab-pane fade show active" id="info-kontak" role="tabpanel" aria-labelledby="info-kontak-tab">
+                                <div class="mb-4">
+                                    <label for="id_nomor_telepon" class="form-label mb-2" style="color: #445670; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.3px;">Nomor Telepon</label>
+                                    <div class="neumorph-input-container" style="position: relative;">
+                                        {% render_field form.nomor_telepon class="form-control" placeholder="Contoh: +6281234567890" style="height: 50px; background: #e0e5ec; border: none; border-radius: 16px; padding: 10px 18px; color: #445670; font-size: 0.9rem; box-shadow: inset 3px 3px 6px rgba(163, 177, 198, 0.5), inset -3px -3px 6px rgba(255, 255, 255, 0.8);" %}
+                                    </div>
+                                    <div class="form-text mt-2" style="color: #7d8ba2; font-size: 0.75rem; margin-left: 4px;"><i class="bi bi-info-circle me-1"></i>Gunakan format internasional.</div>
+                                    <div class="invalid-feedback" style="color: #dc3545; font-size: 0.75rem; margin-left: 4px;">
+                                        {% if form.nomor_telepon.errors %}
+                                            {{ form.nomor_telepon.errors|striptags }}
+                                        {% else %}
+                                            Nomor telepon wajib diisi.
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="id_foto_profil" class="form-label mb-2" style="color: #445670; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.3px;">Foto Profil</label>
+                                    <div class="neumorph-file-upload" style="position: relative; background: #e0e5ec; border-radius: 16px; box-shadow: inset 3px 3px 6px rgba(163, 177, 198, 0.5), inset -3px -3px 6px rgba(255, 255, 255, 0.8);">
+                                        <div class="p-3 text-center">
+                                            <label for="id_foto_profil" class="d-block mb-0" style="cursor: pointer;">
+                                                <div class="py-3 px-2">
+                                                    <i class="bi bi-cloud-arrow-up mb-2" style="font-size: 1.8rem; color: #3d6cb9;"></i>
+                                                    <p class="mb-0" style="color: #445670; font-size: 0.875rem;">Klik untuk mengunggah foto</p>
+                                                </div>
+                                                {% render_field form.foto_profil class="d-none" %}
+                                            </label>
+                                            <div id="file-name-display" class="mt-2 small" style="color: #3d6cb9; font-size: 0.75rem;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="invalid-feedback" style="color: #dc3545; font-size: 0.75rem; margin-left: 4px;">
+                                        {% if form.foto_profil.errors %}
+                                            {{ form.foto_profil.errors|striptags }}
+                                        {% else %}
+                                            Foto profil wajib diunggah.
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tab 2: Enhanced Documents Layout -->
+                            <div class="tab-pane fade" id="dokumen-wajib" role="tabpanel" aria-labelledby="dokumen-wajib-tab">
+                                <div class="mb-4">
+                                    <label for="id_dokumen_ktm" class="form-label mb-2" style="color: #445670; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.3px;">Kartu Tanda Mahasiswa (KTM)</label>
+                                    <div class="neumorph-file-upload" style="position: relative; background: #e0e5ec; border-radius: 16px; box-shadow: inset 3px 3px 6px rgba(163, 177, 198, 0.5), inset -3px -3px 6px rgba(255, 255, 255, 0.8);">
+                                        <div class="p-3 text-center">
+                                            <label for="id_dokumen_ktm" class="d-block mb-0" style="cursor: pointer;">
+                                                <div class="py-3 px-2">
+                                                    <i class="bi bi-file-earmark-person mb-2" style="font-size: 1.8rem; color: #3d6cb9;"></i>
+                                                    <p class="mb-0" style="color: #445670; font-size: 0.875rem;">Unggah KTM</p>
+                                                </div>
+                                                {% render_field form.dokumen_ktm class="d-none" %}
+                                            </label>
+                                            <div id="ktm-file-name" class="mt-2 small" style="color: #3d6cb9; font-size: 0.75rem;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="invalid-feedback" style="color: #dc3545; font-size: 0.75rem; margin-left: 4px;">
+                                        {% if form.dokumen_ktm.errors %}
+                                            {{ form.dokumen_ktm.errors|striptags }}
+                                        {% else %}
+                                            KTM wajib diunggah.
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="id_dokumen_cv" class="form-label mb-2" style="color: #445670; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.3px;">Curriculum Vitae (CV)</label>
+                                    <div class="neumorph-file-upload" style="position: relative; background: #e0e5ec; border-radius: 16px; box-shadow: inset 3px 3px 6px rgba(163, 177, 198, 0.5), inset -3px -3px 6px rgba(255, 255, 255, 0.8);">
+                                        <div class="p-3 text-center">
+                                            <label for="id_dokumen_cv" class="d-block mb-0" style="cursor: pointer;">
+                                                <div class="py-3 px-2">
+                                                    <i class="bi bi-file-earmark-text mb-2" style="font-size: 1.8rem; color: #3d6cb9;"></i>
+                                                    <p class="mb-0" style="color: #445670; font-size: 0.875rem;">Unggah CV</p>
+                                                </div>
+                                                {% render_field form.dokumen_cv class="d-none" %}
+                                            </label>
+                                            <div id="cv-file-name" class="mt-2 small" style="color: #3d6cb9; font-size: 0.75rem;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="form-text mt-2" style="color: #7d8ba2; font-size: 0.75rem; margin-left: 4px;"><i class="bi bi-info-circle me-1"></i>Unggah CV terbaru Anda.</div>
+                                    <div class="invalid-feedback" style="color: #dc3545; font-size: 0.75rem; margin-left: 4px;">
+                                        {% if form.dokumen_cv.errors %}
+                                            {{ form.dokumen_cv.errors|striptags }}
+                                        {% else %}
+                                            CV wajib diunggah.
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="id_dokumen_surat_minat" class="form-label mb-2" style="color: #445670; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.3px;">Surat Minat</label>
+                                    <div class="neumorph-file-upload" style="position: relative; background: #e0e5ec; border-radius: 16px; box-shadow: inset 3px 3px 6px rgba(163, 177, 198, 0.5), inset -3px -3px 6px rgba(255, 255, 255, 0.8);">
+                                        <div class="p-3 text-center">
+                                            <label for="id_dokumen_surat_minat" class="d-block mb-0" style="cursor: pointer;">
+                                                <div class="py-3 px-2">
+                                                    <i class="bi bi-file-earmark-richtext mb-2" style="font-size: 1.8rem; color: #3d6cb9;"></i>
+                                                    <p class="mb-0" style="color: #445670; font-size: 0.875rem;">Unggah Surat Minat</p>
+                                                </div>
+                                                {% render_field form.dokumen_surat_minat class="d-none" %}
+                                            </label>
+                                            <div id="minat-file-name" class="mt-2 small" style="color: #3d6cb9; font-size: 0.75rem;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="form-text mt-2" style="color: #7d8ba2; font-size: 0.75rem; margin-left: 4px;"><i class="bi bi-info-circle me-1"></i>Jelaskan mengapa Anda tertarik bergabung dengan UKM ini.</div>
+                                    <div class="invalid-feedback" style="color: #dc3545; font-size: 0.75rem; margin-left: 4px;">
+                                        {% if form.dokumen_surat_minat.errors %}
+                                            {{ form.dokumen_surat_minat.errors|striptags }}
+                                        {% else %}
+                                            Surat minat wajib diunggah.
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tab 3: Enhanced Optional Documents Layout -->
+                            <div class="tab-pane fade" id="dokumen-lainnya" role="tabpanel" aria-labelledby="dokumen-lainnya-tab">
+                                <div class="mb-4">
+                                    <label for="id_dokumen_lainnya" class="form-label mb-2" style="color: #445670; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.3px;">Dokumen Pendukung (Opsional)</label>
+                                    <div class="neumorph-file-upload" style="position: relative; background: #e0e5ec; border-radius: 16px; box-shadow: inset 3px 3px 6px rgba(163, 177, 198, 0.5), inset -3px -3px 6px rgba(255, 255, 255, 0.8);">
+                                        <div class="p-3 text-center">
+                                            <label for="id_dokumen_lainnya" class="d-block mb-0" style="cursor: pointer;">
+                                                <div class="py-3 px-2">
+                                                    <i class="bi bi-file-earmark-plus mb-2" style="font-size: 1.8rem; color: #3d6cb9;"></i>
+                                                    <p class="mb-0" style="color: #445670; font-size: 0.875rem;">Unggah Dokumen Pendukung</p>
+                                                </div>
+                                                {% render_field form.dokumen_lainnya class="d-none" %}
+                                            </label>
+                                            <div id="lainnya-file-name" class="mt-2 small" style="color: #3d6cb9; font-size: 0.75rem;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="form-text mt-2" style="color: #7d8ba2; font-size: 0.75rem; margin-left: 4px;"><i class="bi bi-info-circle me-1"></i>Contoh: Sertifikat, Portofolio, dll.</div>
+                                    <div class="invalid-feedback" style="color: #dc3545; font-size: 0.75rem; margin-left: 4px;">
+                                        {% if form.dokumen_lainnya.errors %}
+                                            {{ form.dokumen_lainnya.errors|striptags }}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Improved Button Layout -->
+                        <div class="d-flex flex-column gap-3 mt-5">
+                            <button type="submit" class="btn px-4 py-3" 
+                                    style="background: #e0e5ec; color: #3d6cb9; font-weight: 600; letter-spacing: 0.5px; border: none; border-radius: 16px; 
+                                    box-shadow: 6px 6px 12px rgba(163, 177, 198, 0.5), -6px -6px 12px rgba(255, 255, 255, 0.8); 
+                                    transition: all 0.3s ease;">
+                                <i class="bi bi-send me-2"></i>Kirim Pendaftaran
+                            </button>
+                            <a href="{% url 'list_ukm' %}" class="btn px-4 py-3 text-center" 
+                               style="background: #e0e5ec; color: #6b7a8d; font-weight: 500; letter-spacing: 0.5px; border: none; border-radius: 16px; 
+                               box-shadow: 6px 6px 12px rgba(163, 177, 198, 0.5), -6px -6px 12px rgba(255, 255, 255, 0.8); 
+                               transition: all 0.3s ease;">
+                                <i class="bi bi-arrow-left me-2"></i>Kembali ke Daftar UKM
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Enhanced validation & interactions
+    (function () {
+        'use strict'
+        
+        // Improved button animations with smoother transitions
+        const neomorphButtons = document.querySelectorAll('.btn');
+        neomorphButtons.forEach(button => {
+            button.addEventListener('mousedown', function() {
+                this.style.boxShadow = 'inset 4px 4px 8px rgba(163, 177, 198, 0.6), inset -4px -4px 8px rgba(255, 255, 255, 0.9)';
+                this.style.transform = 'translateY(2px)';
+            });
+            
+            button.addEventListener('mouseup', function() {
+                this.style.boxShadow = '6px 6px 12px rgba(163, 177, 198, 0.5), -6px -6px 12px rgba(255, 255, 255, 0.8)';
+                this.style.transform = 'translateY(0)';
+            });
+            
+            button.addEventListener('mouseleave', function() {
+                this.style.boxShadow = '6px 6px 12px rgba(163, 177, 198, 0.5), -6px -6px 12px rgba(255, 255, 255, 0.8)';
+                this.style.transform = 'translateY(0)';
+            });
+
+            // Add hover effect
+            button.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-1px)';
+                this.style.boxShadow = '8px 8px 16px rgba(163, 177, 198, 0.6), -8px -8px 16px rgba(255, 255, 255, 0.9)';
+            });
+        });
+        
+        // Enhanced tab interactions
+        const tabButtons = document.querySelectorAll('.nav-link');
+        tabButtons.forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Remove active class from all tabs
+                tabButtons.forEach(t => {
+                    t.style.boxShadow = 'none';
+                    t.style.color = '#445670';
+                    t.style.fontWeight = '500';
+                });
+                
+                // Add active style to clicked tab
+                this.style.boxShadow = 'inset 3px 3px 6px rgba(163, 177, 198, 0.5), inset -3px -3px 6px rgba(255, 255, 255, 0.8)';
+                this.style.color = '#3d6cb9';
+                this.style.fontWeight = '600';
+            });
+
+            // Add hover effect for tabs
+            tab.addEventListener('mouseenter', function() {
+                if (!this.classList.contains('active')) {
+                    this.style.color = '#3d6cb9';
+                }
+            });
+            
+            tab.addEventListener('mouseleave', function() {
+                if (!this.classList.contains('active')) {
+                    this.style.color = '#445670';
+                }
+            });
+        });
+        
+        // Initialize first tab with active style
+        document.querySelector('.nav-link.active').style.boxShadow = 'inset 3px 3px 6px rgba(163, 177, 198, 0.5), inset -3px -3px 6px rgba(255, 255, 255, 0.8)';
+        document.querySelector('.nav-link.active').style.color = '#3d6cb9';
+        document.querySelector('.nav-link.active').style.fontWeight = '600';
+        
+        // Enhanced file input feedback
+        document.getElementById('id_foto_profil').addEventListener('change', function(e) {
+            if(this.files[0]) {
+                document.getElementById('file-name-display').innerHTML = `<i class="bi bi-check-circle-fill me-1"></i>${this.files[0].name}`;
+            }
+        });
+        
+        document.getElementById('id_dokumen_ktm').addEventListener('change', function(e) {
+            if(this.files[0]) {
+                document.getElementById('ktm-file-name').innerHTML = `<i class="bi bi-check-circle-fill me-1"></i>${this.files[0].name}`;
+            }
+        });
+        
+        document.getElementById('id_dokumen_cv').addEventListener('change', function(e) {
+            if(this.files[0]) {
+                document.getElementById('cv-file-name').innerHTML = `<i class="bi bi-check-circle-fill me-1"></i>${this.files[0].name}`;
+            }
+        });
+        
+        document.getElementById('id_dokumen_surat_minat').addEventListener('change', function(e) {
+            if(this.files[0]) {
+                document.getElementById('minat-file-name').innerHTML = `<i class="bi bi-check-circle-fill me-1"></i>${this.files[0].name}`;
+            }
+        });
+        
+        document.getElementById('id_dokumen_lainnya').addEventListener('change', function(e) {
+            if(this.files[0]) {
+                document.getElementById('lainnya-file-name').innerHTML = `<i class="bi bi-check-circle-fill me-1"></i>${this.files[0].name}`;
+            }
+        });
+
+        // Improved form validation with better visual feedback
+        var forms = document.querySelectorAll('.needs-validation')
+        var tabsWithError = []; 
+
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    tabsWithError = []; 
+                    var firstErrorTab = null;
+
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+
+                        form.querySelectorAll(':invalid').forEach(function(invalidInput) {
+                            var tabPane = invalidInput.closest('.tab-pane');
+                            if (tabPane) {
+                                var tabId = tabPane.id;
+                                var tabButton = document.querySelector(`[data-bs-target="#${tabId}"]`);
+                                if (tabButton && !tabsWithError.includes(tabId)) {
+                                    tabsWithError.push(tabId);
+                                    tabButton.style.color = '#dc3545';
+                                    if (!firstErrorTab) {
+                                        firstErrorTab = tabButton;
+                                    }
+                                }
+                            }
+                        });
+
+                        if (firstErrorTab) {
+                           var tab = new bootstrap.Tab(firstErrorTab);
+                           tab.show();
+                        }
+
+                    } else {
+                         form.querySelectorAll('.nav-link[style*="color: rgb(220, 53, 69)"]').forEach(function(tabButton){
+                            tabButton.style.color = '#5b6d86';
+                         });
+                    }
+
+                    form.classList.add('was-validated')
+
+                     form.querySelectorAll('.nav-link[style*="color: rgb(220, 53, 69)"]').forEach(function(tabButton){
+                        var tabId = tabButton.getAttribute('data-bs-target');
+                        var inputsInTab = form.querySelectorAll(`${tabId} input, ${tabId} select, ${tabId} textarea`);
+                        inputsInTab.forEach(function(input){
+                            input.addEventListener('input', function() {
+                                var hasOtherErrors = false;
+                                form.querySelectorAll(`${tabId} :invalid`).forEach(function(invalidCheck){
+                                    if(invalidCheck !== input) hasOtherErrors = true;
+                                });
+                                
+                                if(input.checkValidity() && !hasOtherErrors) {
+                                     tabButton.style.color = '#5b6d86';
+                                } else if (!input.checkValidity()) {
+                                     tabButton.style.color = '#dc3545';
+                                }
+                            }, { once: true });
+                        });
+                    });
+                }, false)
+            })
+    })()
+</script>
+{% endblock %}

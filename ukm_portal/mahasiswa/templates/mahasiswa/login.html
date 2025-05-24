@@ -1,0 +1,220 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    :root {
+        --background: #e0e5ec;
+        --text-color: #4d4d4d;
+        --shadow-light: #ffffff;
+        --shadow-dark: #a3b1c6;
+        --primary: #6b8afd;
+        --primary-dark: #5a7aed;
+        --error: #ff6b6b;
+        --success: #51cf66;
+        --placeholder-color: #9aa3b2;
+    }
+    
+    body {
+        background-color: var(--background);
+        font-family: 'Poppins', 'Segoe UI', sans-serif;
+        color: var(--text-color);
+    }
+    
+    .neumorphic-card {
+        max-width: 400px;
+        margin: 80px auto;
+        background-color: var(--background);
+        border-radius: 20px;
+        box-shadow: 8px 8px 16px var(--shadow-dark), 
+                   -8px -8px 16px var(--shadow-light);
+        padding: 30px;
+        transition: all 0.3s ease;
+    }
+    
+    .neumorphic-card-header {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+    
+    .neumorphic-card-header h3 {
+        color: var(--text-color);
+        font-weight: 600;
+        font-size: 24px;
+        margin: 0;
+    }
+    
+    .neumorphic-input-group {
+        margin-bottom: 25px;
+        position: relative;
+    }
+    
+    .neumorphic-label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: 500;
+        color: var(--text-color);
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+    }
+    
+    .neumorphic-label i {
+        margin-right: 8px;
+        color: var(--primary);
+    }
+    
+    .neumorphic-input {
+        width: 100%;
+        padding: 15px;
+        border: none;
+        background-color: var(--background);
+        color: var(--text-color);
+        border-radius: 12px;
+        box-shadow: inset 4px 4px 8px var(--shadow-dark), 
+                   inset -4px -4px 8px var(--shadow-light);
+        outline: none;
+        transition: all 0.3s ease;
+        padding-left: 40px;
+    }
+    
+    .neumorphic-input:focus {
+        box-shadow: inset 6px 6px 10px var(--shadow-dark), 
+                   inset -6px -6px 10px var(--shadow-light);
+    }
+    
+    .neumorphic-input::placeholder {
+        color: var(--placeholder-color);
+        font-size: 13px;
+    }
+    
+    .input-icon {
+        position: absolute;
+        left: 15px;
+        top: 43px;
+        color: var(--primary);
+        opacity: 0.8;
+    }
+    
+    .neumorphic-button {
+        display: block;
+        width: 100%;
+        padding: 15px;
+        border: none;
+        background: var(--primary);
+        color: white;
+        border-radius: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 4px 4px 8px var(--shadow-dark), 
+                   -4px -4px 8px var(--shadow-light);
+        transition: all 0.3s ease;
+        margin-top: 15px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .neumorphic-button i {
+        margin-right: 8px;
+    }
+    
+    .neumorphic-button:hover {
+        background: var(--primary-dark);
+    }
+    
+    .neumorphic-button:active {
+        box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.2), 
+                   inset -4px -4px 8px rgba(255, 255, 255, 0.1);
+    }
+    
+    .register-link {
+        text-align: center;
+        margin-top: 25px;
+        font-size: 14px;
+    }
+    
+    .register-link a {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .register-link a:hover {
+        color: var(--primary-dark);
+    }
+    
+    .alert {
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 12px;
+        font-size: 14px;
+        box-shadow: inset 4px 4px 8px var(--shadow-dark), 
+                   inset -4px -4px 8px var(--shadow-light);
+        display: flex;
+        align-items: center;
+    }
+    
+    .alert i {
+        margin-right: 10px;
+    }
+    
+    .alert-error, .alert-danger {
+        background-color: rgba(255, 107, 107, 0.1);
+        color: var(--error);
+    }
+    
+    .alert-success {
+        background-color: rgba(81, 207, 102, 0.1);
+        color: var(--success);
+    }
+</style>
+
+<!-- Font Awesome CDN for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<div class="neumorphic-card">
+    <div class="neumorphic-card-header">
+        <h3><i class="fas fa-user-graduate"></i> Login Mahasiswa</h3>
+    </div>
+    
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {% if message.tags == 'error' or message.tags == 'danger' %}
+                    <i class="fas fa-exclamation-circle"></i>
+                {% elif message.tags == 'success' %}
+                    <i class="fas fa-check-circle"></i>
+                {% else %}
+                    <i class="fas fa-info-circle"></i>
+                {% endif %}
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    
+    <form method="post">
+        {% csrf_token %}
+        <div class="neumorphic-input-group">
+            <label for="username" class="neumorphic-label">
+                <i class="fas fa-user"></i> Username
+            </label>
+            <input type="text" name="username" id="username" class="neumorphic-input" placeholder="Masukkan username Anda" required>
+        </div>
+        
+        <div class="neumorphic-input-group">
+            <label for="password" class="neumorphic-label">
+                <i class="fas fa-lock"></i> Password
+            </label>
+            <input type="password" name="password" id="password" class="neumorphic-input" placeholder="Masukkan password Anda" required>
+        </div>
+        
+        <button type="submit" class="neumorphic-button">
+            <i class="fas fa-sign-in-alt"></i> Login
+        </button>
+    </form>
+    
+    <div class="register-link">
+        <p><i class="fas fa-user-plus"></i> Belum punya akun? <a href="{% url 'register_mahasiswa' %}">Daftar di sini</a></p>
+    </div>
+</div>
+{% endblock %}

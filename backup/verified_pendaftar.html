@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3>Verifikasi Pendaftar: {{ pendaftar.nama }}</h3>
+    </div>
+    <div class="card-body">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <h5>Informasi Pendaftar</h5>
+        <p><strong>Nama:</strong> {{ pendaftar.nama }}</p>
+        <p><strong>NIM:</strong> {{ pendaftar.nim }}</p>
+        <p><strong>Fakultas:</strong> {{ pendaftar.fakultas }}</p>
+        <p><strong>Angkatan:</strong> {{ pendaftar.angkatan }}</p>
+        <p><strong>Email:</strong> {{ pendaftar.email }}</p>
+        <p><strong>Nomor Telepon:</strong> {{ pendaftar.nomor_telepon|default:"Tidak tersedia" }}</p>
+        <p><strong>Status:</strong> {{ pendaftar.status }}</p>
+
+        <h5>Dokumen Pendaftar</h5>
+        {% if pendaftar.foto_profil and pendaftar.foto_profil.url %}
+            <p><strong>Foto Profil:</strong></p>
+            <img src="{{ pendaftar.foto_profil.url }}" alt="Foto Profil" style="max-width: 200px; height: auto; border-radius: 5px;">
+        {% else %}
+            <p><strong>Foto Profil:</strong> Tidak diunggah</p>
+        {% endif %}
+
+        {% if pendaftar.dokumen_ktm and pendaftar.dokumen_ktm.url %}
+            <p><strong>KTM:</strong> <a href="{{ pendaftar.dokumen_ktm.url }}" target="_blank">Lihat KTM</a></p>
+        {% else %}
+            <p><strong>KTM:</strong> Tidak diunggah</p>
+        {% endif %}
+
+        {% if pendaftar.dokumen_cv and pendaftar.dokumen_cv.url %}
+            <p><strong>CV:</strong> <a href="{{ pendaftar.dokumen_cv.url }}" target="_blank">Lihat CV</a></p>
+        {% else %}
+            <p><strong>CV:</strong> Tidak diunggah</p>
+        {% endif %}
+
+        {% if pendaftar.dokumen_surat_minat and pendaftar.dokumen_surat_minat.url %}
+            <p><strong>Surat Minat:</strong> <a href="{{ pendaftar.dokumen_surat_minat.url }}" target="_blank">Lihat Surat Minat</a></p>
+        {% else %}
+            <p><strong>Surat Minat:</strong> Tidak diunggah</p>
+        {% endif %}
+
+        {% if pendaftar.dokumen_lainnya and pendaftar.dokumen_lainnya.url %}
+            <p><strong>Dokumen Lainnya:</strong> <a href="{{ pendaftar.dokumen_lainnya.url }}" target="_blank">Lihat Dokumen Lainnya</a></p>
+        {% else %}
+            <p><strong>Dokumen Lainnya:</strong> Tidak diunggah</p>
+        {% endif %}
+
+        {% if pendaftar.status == 'diproses' %}
+        <h5>Aksi</h5>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" name="action" value="terima" class="btn btn-success">Terima</button>
+            <button type="submit" name="action" value="tolak" class="btn btn-danger">Tolak</button>
+        </form>
+        {% endif %}
+        <a href="{% url 'view_pendaftar' %}" class="btn btn-secondary mt-3">Kembali</a>
+    </div>
+</div>
+{% endblock %}

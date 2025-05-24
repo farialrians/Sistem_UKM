@@ -1,0 +1,333 @@
+{% extends 'base_admin.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    /* Neumorphic Base Variables */
+    :root {
+        --neu-background: #e0e5ec;
+        --neu-light-shadow: #ffffff;
+        --neu-dark-shadow: rgba(163, 177, 198, 0.5);
+        --neu-flat: 2px 2px 5px var(--neu-dark-shadow), -2px -2px 5px var(--neu-light-shadow);
+        --neu-pressed: inset 2px 2px 5px var(--neu-dark-shadow), inset -2px -2px 5px var(--neu-light-shadow);
+        --neu-primary: #4a80f0;
+        --neu-success: #4ade80;
+        --neu-warning: #fbbf24;
+        --neu-danger: #f87171;
+        --neu-info: #38bdf8;
+        --neu-text: #334155;
+        --neu-text-light: #64748b;
+        --transition: all 0.3s ease;
+    }
+
+    body {
+        background-color: var(--neu-background);
+        color: var(--neu-text);
+    }
+
+    /* Neumorphic Card Styles */
+    .neu-card {
+        border-radius: 16px;
+        background: var(--neu-background);
+        box-shadow: var(--neu-flat);
+        transition: var(--transition);
+        border: none;
+        overflow: hidden;
+    }
+
+    .neu-card:hover {
+        transform: translateY(-5px);
+    }
+
+    /* Neumorphic Button Styles */
+    .neu-btn {
+        border-radius: 12px;
+        background: var(--neu-background);
+        box-shadow: var(--neu-flat);
+        transition: var(--transition);
+        border: none;
+        padding: 10px 20px;
+        color: var(--neu-text);
+        font-weight: 500;
+    }
+
+    .neu-btn:hover {
+        box-shadow: var(--neu-pressed);
+    }
+    
+    .neu-btn-primary {
+        background: linear-gradient(145deg, #4376e6, #5a8af5);
+        color: white;
+    }
+    
+    .neu-btn-outline {
+        background: var(--neu-background);
+        border: 1px solid var(--neu-dark-shadow);
+    }
+    
+    .neu-btn-primary:hover, .neu-btn-outline:hover {
+        transform: translateY(-2px);
+    }
+
+    /* Neumorphic Icon Circle */
+    .neu-icon-circle {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        background: var(--neu-background);
+        box-shadow: var(--neu-flat);
+        transition: var(--transition);
+    }
+    
+    .neu-icon-circle:hover {
+        box-shadow: var(--neu-pressed);
+    }
+    
+    .neu-icon-circle.primary { color: var(--neu-primary); }
+    .neu-icon-circle.success { color: var(--neu-success); }
+    .neu-icon-circle.warning { color: var(--neu-warning); }
+    .neu-icon-circle.danger { color: var(--neu-danger); }
+    .neu-icon-circle.info { color: var(--neu-info); }
+
+    /* Stats Cards */
+    .stat-card {
+        transition: var(--transition);
+        height: 100%;
+    }
+    
+    .stat-number {
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: var(--neu-text);
+    }
+    
+    .stat-label {
+        color: var(--neu-text-light);
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+
+    /* Action Cards */
+    .action-card {
+        height: 100%;
+        transition: var(--transition);
+    }
+    
+    .action-card:hover .neu-icon-circle {
+        transform: scale(1.1);
+    }
+    
+    /* Animations */
+    .fade-in {
+        animation: fadeInUp 0.6s ease-out forwards;
+    }
+    
+    @keyframes fadeInUp {
+        from { 
+            opacity: 0; 
+            transform: translateY(20px); 
+        }
+        to { 
+            opacity: 1; 
+            transform: translateY(0); 
+        }
+    }
+    
+    .fade-in.delay-1 { animation-delay: 0.1s; opacity: 0; }
+    .fade-in.delay-2 { animation-delay: 0.2s; opacity: 0; }
+    .fade-in.delay-3 { animation-delay: 0.3s; opacity: 0; }
+    .fade-in.delay-4 { animation-delay: 0.4s; opacity: 0; }
+    .fade-in.delay-5 { animation-delay: 0.5s; opacity: 0; }
+    
+    /* Alert Styles */
+    .neu-alert {
+        border-radius: 16px;
+        padding: 16px;
+        margin-bottom: 20px;
+        border: none;
+    }
+    
+    .neu-alert-success {
+        background: linear-gradient(145deg, rgba(74, 222, 128, 0.1), rgba(74, 222, 128, 0.2));
+        color: var(--neu-success);
+    }
+    
+    .neu-alert-warning {
+        background: linear-gradient(145deg, rgba(251, 191, 36, 0.1), rgba(251, 191, 36, 0.2));
+        color: var(--neu-warning);
+    }
+    
+    .neu-alert-danger {
+        background: linear-gradient(145deg, rgba(248, 113, 113, 0.1), rgba(248, 113, 113, 0.2));
+        color: var(--neu-danger);
+    }
+    
+    /* Badge Styles */
+    .neu-badge {
+        border-radius: 10px;
+        padding: 4px 8px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+    
+    .neu-badge-warning {
+        background: var(--neu-warning);
+        color: white;
+    }
+    
+    .neu-badge-danger {
+        background: var(--neu-danger);
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-2 px-4">
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="neu-alert neu-alert-{{ message.tags }} fade-in">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% if ukm %}
+        <div class="neu-card p-4 mb-4 fade-in">
+            <div class="d-flex align-items-center">
+                {% if ukm.logo %}
+                    <div style="width: 70px; height: 70px; border-radius: 16px; overflow: hidden; box-shadow: var(--neu-flat);" class="me-4">
+                        <img src="{{ ukm.logo.url }}" alt="Logo {{ ukm.nama }}" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                {% endif %}
+                <div>
+                    <h3 class="mb-1 fw-bold">{{ ukm.nama }}</h3>
+                    <p class="mb-0 text-muted">Halo, {{ request.user.get_full_name|default:request.user.username }}! Selamat datang di dashboard UKM Anda.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-lg-4 col-md-6 mb-4 fade-in delay-1">
+                <div class="neu-card stat-card p-4">
+                    <div class="d-flex align-items-center">
+                        <div class="neu-icon-circle warning me-3">
+                            <i class="fas fa-user-clock fs-4"></i>
+                        </div>
+                        <div>
+                            <div class="stat-number">{{ pending_registrations_count }}</div>
+                            <div class="stat-label">Pendaftar Menunggu</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4 fade-in delay-2">
+                <div class="neu-card stat-card p-4">
+                    <div class="d-flex align-items-center">
+                        <div class="neu-icon-circle success me-3">
+                            <i class="fas fa-users fs-4"></i>
+                        </div>
+                        <div>
+                            <div class="stat-number">{{ total_members_count }}</div>
+                            <div class="stat-label">Total Anggota Aktif</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-12 mb-4 fade-in delay-3">
+                <div class="neu-card stat-card p-4">
+                    <div class="d-flex align-items-center">
+                        <div class="neu-icon-circle danger me-3">
+                            <i class="fas fa-envelope-open-text fs-4"></i>
+                        </div>
+                        <div>
+                            <div class="stat-number">{{ unread_messages_count }}</div>
+                            <div class="stat-label">Pesan Belum Dibaca</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h5 class="mb-4 ms-2 fw-light fade-in delay-4">Aksi Cepat</h5>
+        <div class="row">
+            <div class="col-md-6 col-lg-3 mb-4 fade-in delay-4">
+                <div class="neu-card action-card p-4">
+                    <div class="d-flex flex-column align-items-center text-center">
+                        <div class="neu-icon-circle primary mb-4">
+                            <i class="fas fa-info-circle fs-4"></i>
+                        </div>
+                        <h6 class="fw-bold mb-2">Informasi UKM</h6>
+                        <p class="text-muted mb-4 small">Perbarui detail, visi, misi, dan jadwal UKM Anda.</p>
+                        <a href="{% url 'upload_ukm_info' %}" class="neu-btn neu-btn-outline w-100">Kelola Info</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-4 fade-in delay-5">
+                <div class="neu-card action-card p-4">
+                    <div class="d-flex flex-column align-items-center text-center">
+                        <div class="neu-icon-circle warning mb-4">
+                            <i class="fas fa-user-plus fs-4"></i>
+                        </div>
+                        <h6 class="fw-bold mb-2">
+                            Pendaftar
+                            {% if pending_registrations_count > 0 %}
+                                <span class="neu-badge neu-badge-warning ms-1">{{ pending_registrations_count }}</span>
+                            {% endif %}
+                        </h6>
+                        <p class="text-muted mb-4 small">Lihat, verifikasi (terima/tolak) pendaftar baru.</p>
+                        <a href="{% url 'view_pendaftar' %}" class="neu-btn neu-btn-outline w-100">Kelola Pendaftar</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-4 fade-in delay-5">
+                <div class="neu-card action-card p-4">
+                    <div class="d-flex flex-column align-items-center text-center">
+                        <div class="neu-icon-circle success mb-4">
+                            <i class="fas fa-user-check fs-4"></i>
+                        </div>
+                        <h6 class="fw-bold mb-2">Anggota</h6>
+                        <p class="text-muted mb-4 small">Lihat daftar anggota aktif dan kelola status mereka.</p>
+                        <a href="{% url 'view_anggota' %}" class="neu-btn neu-btn-outline w-100">Kelola Anggota</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-4 fade-in delay-5">
+                <div class="neu-card action-card p-4">
+                    <div class="d-flex flex-column align-items-center text-center">
+                        <div class="neu-icon-circle danger mb-4">
+                            <i class="fas fa-comments fs-4"></i>
+                        </div>
+                        <h6 class="fw-bold mb-2">
+                            Pesan
+                            {% if unread_messages_count > 0 %}
+                                <span class="neu-badge neu-badge-danger ms-1">{{ unread_messages_count }}</span>
+                            {% endif %}
+                        </h6>
+                        <p class="text-muted mb-4 small">Baca dan balas pesan dari mahasiswa atau pendaftar.</p>
+                        <a href="{% url 'semua_pesan' %}" class="neu-btn neu-btn-outline w-100">Lihat Pesan</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% else %}
+        <div class="neu-card p-5 text-center fade-in">
+            <i class="fas fa-exclamation-triangle fa-4x text-warning mb-4"></i>
+            <h3 class="mb-3 fw-bold">Selamat Datang, {{ request.user.username }}!</h3>
+            <p class="text-muted mb-4">Anda saat ini belum terdaftar sebagai admin untuk UKM manapun.</p>
+            <p class="mb-4">Silakan tambahkan informasi UKM yang Anda kelola untuk memulai.</p>
+            <a href="{% url 'upload_ukm_info' %}" class="neu-btn neu-btn-primary px-4 py-3">
+                <i class="fas fa-plus-circle me-2"></i> Tambah Informasi UKM
+            </a>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}

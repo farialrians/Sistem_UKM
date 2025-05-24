@@ -1,0 +1,423 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Admin UKM - UKM Portal</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --background: #e6e9ef;
+            --text-primary: #2d3436;
+            --text-secondary: #636e72;
+            --primary: #3498db;
+            --primary-dark: #2980b9;
+            --shadow-light: #ffffff;
+            --shadow-dark: #c8d0e7;
+        }
+        
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0;
+        }
+        
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            padding: 0 20px;
+        }
+        
+        .login-card {
+            max-width: 450px;
+            width: 100%;
+            margin: 40px 0;
+        }
+        
+        .neumorphic-card {
+            border-radius: 24px;
+            background-color: var(--background);
+            box-shadow: 10px 10px 20px var(--shadow-dark), 
+                        -10px -10px 20px var(--shadow-light);
+            padding: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .card-header {
+            background-color: var(--background);
+            border-bottom: none;
+            padding: 25px 20px 15px;
+            text-align: center;
+            box-shadow: inset 2px 2px 5px var(--shadow-dark), 
+                        inset -2px -2px 5px var(--shadow-light);
+        }
+        
+        .card-header h3 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+        }
+        
+        .card-body {
+            padding: 25px 30px;
+            background-color: var(--background);
+        }
+        
+        .neumorphic-input {
+            height: 55px;
+            border-radius: 12px;
+            border: none;
+            background-color: var(--background);
+            box-shadow: inset 2px 2px 5px var(--shadow-dark), 
+                        inset -2px -2px 5px var(--shadow-light);
+            padding: 10px 15px;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+        }
+        
+        .neumorphic-input:focus {
+            outline: none;
+            box-shadow: inset 4px 4px 8px var(--shadow-dark), 
+                        inset -4px -4px 8px var(--shadow-light);
+        }
+        
+        .neumorphic-input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .neumorphic-input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            z-index: 10;
+        }
+        
+        .neumorphic-input-field {
+            padding-left: 45px;
+            width: 100%;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+        
+        .neumorphic-button {
+            width: 100%;
+            height: 55px;
+            border-radius: 12px;
+            border: none;
+            background-color: var(--background);
+            box-shadow: 5px 5px 10px var(--shadow-dark), 
+                        -5px -5px 10px var(--shadow-light);
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        
+        .neumorphic-button:hover {
+            box-shadow: 7px 7px 15px var(--shadow-dark), 
+                        -7px -7px 15px var(--shadow-light);
+        }
+        
+        .neumorphic-button:active {
+            box-shadow: inset 2px 2px 5px var(--shadow-dark), 
+                        inset -2px -2px 5px var(--shadow-light);
+            transform: scale(0.98);
+        }
+        
+        .neumorphic-button i {
+            margin-right: 10px;
+        }
+        
+        .ukm-logo-container {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            box-shadow: 5px 5px 10px var(--shadow-dark), 
+                        -5px -5px 10px var(--shadow-light);
+            background-color: var(--background);
+        }
+        
+        .ukm-logo {
+            max-width: 55px;
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--text-secondary);
+            z-index: 10;
+        }
+        
+        .alert-neumorphic {
+            border-radius: 12px;
+            background-color: var(--background);
+            box-shadow: inset 2px 2px 5px var(--shadow-dark), 
+                        inset -2px -2px 5px var(--shadow-light);
+            border: none;
+            padding: 12px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+        }
+        
+        .alert-neumorphic i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+            color: var(--primary);
+        }
+        
+        .footer-text {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 20px;
+        }
+        
+        .text-danger {
+            color: #e74c3c !important;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .text-danger i {
+            margin-right: 5px;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .divider {
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--background), var(--primary), var(--background));
+            border-radius: 3px;
+            margin: 12px auto;
+        }
+
+        /* Responsive adjustments */
+        @media (max-height: 700px) {
+            .ukm-logo-container {
+                width: 70px;
+                height: 70px;
+                margin-bottom: 10px;
+            }
+            
+            .ukm-logo {
+                max-width: 45px;
+            }
+            
+            .card-header {
+                padding: 15px 20px 10px;
+            }
+            
+            .card-body {
+                padding: 15px 25px;
+            }
+            
+            .neumorphic-input {
+                height: 45px;
+            }
+            
+            .neumorphic-button {
+                height: 45px;
+                margin-top: 10px;
+            }
+            
+            .neumorphic-input-group {
+                margin-bottom: 15px;
+            }
+            
+            .divider {
+                margin: 8px auto;
+            }
+            
+            .footer-text {
+                margin-top: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-card {
+                max-width: 100%;
+                margin: 15px 0;
+            }
+            
+            .card-body {
+                padding: 20px;
+            }
+        }
+
+        @media (max-height: 600px) {
+            .login-card {
+                margin: 10px 0;
+            }
+            
+            .footer-text p {
+                margin-bottom: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card fade-in">
+            <div class="neumorphic-card">
+                <div class="card-header">
+                    <div class="ukm-logo-container">
+                        <img src="{% static 'images/logo.png' %}" alt="UKM Logo" class="ukm-logo">
+                    </div>
+                    <h3>Admin Portal UKM</h3>
+                    <div class="divider"></div>
+                </div>
+                <div class="card-body">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert-neumorphic mb-3">
+                                <i class="fas fa-info-circle"></i>{{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="id_username" class="form-label">Username</label>
+                            <div class="neumorphic-input-group">
+                                <i class="fas fa-user neumorphic-input-icon"></i>
+                                {{ form.username }}
+                            </div>
+                            {% if form.username.errors %}
+                                <div class="text-danger">
+                                    <i class="fas fa-exclamation-circle"></i>{{ form.username.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="id_password" class="form-label">Password</label>
+                            <div class="neumorphic-input-group">
+                                <i class="fas fa-lock neumorphic-input-icon"></i>
+                                {{ form.password }}
+                                <span class="password-toggle" id="togglePassword">
+                                    <i class="fas fa-eye"></i>
+                                </span>
+                            </div>
+                            {% if form.password.errors %}
+                                <div class="text-danger">
+                                    <i class="fas fa-exclamation-circle"></i>{{ form.password.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <button type="submit" class="neumorphic-button">
+                            <i class="fas fa-sign-in-alt"></i>Login
+                        </button>
+                    </form>
+                    
+                    <div class="footer-text">
+                        <p>Sistem Pengelolaan Unit Kegiatan Mahasiswa</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Password visibility toggle
+            const togglePassword = document.getElementById('togglePassword');
+            const passwordField = document.querySelector('input[type="password"]');
+            
+            togglePassword.addEventListener('click', function() {
+                const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordField.setAttribute('type', type);
+                this.querySelector('i').classList.toggle('fa-eye');
+                this.querySelector('i').classList.toggle('fa-eye-slash');
+            });
+            
+            // Add neumorphic classes to form elements
+            const usernameField = document.getElementById('id_username');
+            const passwordField2 = document.getElementById('id_password');
+            
+            if (usernameField) {
+                usernameField.classList.add('neumorphic-input', 'neumorphic-input-field');
+                usernameField.placeholder = 'Enter your username';
+            }
+            
+            if (passwordField2) {
+                passwordField2.classList.add('neumorphic-input', 'neumorphic-input-field');
+                passwordField2.placeholder = 'Enter your password';
+            }
+            
+            // Add subtle hover effect to input fields
+            const inputs = document.querySelectorAll('.neumorphic-input');
+            inputs.forEach(input => {
+                input.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.01)';
+                });
+                input.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

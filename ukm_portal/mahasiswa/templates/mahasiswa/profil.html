@@ -1,0 +1,50 @@
+{% extends 'base_mahasiswa.html' %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3>Profil Mahasiswa</h3>
+    </div>
+    <div class="card-body">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="row">
+            <div class="col-md-4 text-center">
+                <i class="fas fa-user-circle fa-5x mb-3 text-muted"></i>
+                <h5>{{ mahasiswa.nama }}</h5>
+                <p class="text-muted">{{ mahasiswa.nim }}</p>
+            </div>
+            <div class="col-md-8">
+                <h5>Informasi Pribadi</h5>
+                <table class="table table-bordered">
+                    <tr>
+                        <th>Nama</th>
+                        <td>{{ mahasiswa.nama }}</td>
+                    </tr>
+                    <tr>
+                        <th>NIM</th>
+                        <td>{{ mahasiswa.nim }}</td>
+                    </tr>
+                    <tr>
+                        <th>Fakultas</th>
+                        <td>{{ mahasiswa.fakultas }}</td>
+                    </tr>
+                    <tr>
+                        <th>Angkatan</th>
+                        <td>{{ mahasiswa.angkatan }}</td>
+                    </tr>
+                    <tr>
+                        <th>Email</th>
+                        <td>{{ mahasiswa.email }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <a href="{% url 'dashboard_mahasiswa' %}" class="btn btn-secondary mt-3">Kembali ke Dashboard</a>
+    </div>
+</div>
+{% endblock %}

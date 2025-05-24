@@ -1,0 +1,583 @@
+{% extends 'base_admin.html' %}
+{% load static %}
+
+{% block title %}Kelola Pendaftar - {{ ukm.nama }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --neu-background: #ecf0f3;
+        --neu-text-primary: #333333;
+        --neu-text-secondary: #7a7c80;
+        --neu-accent: #4d84ff;
+        --neu-success: #4CAF50;
+        --neu-warning: #FFC107;
+        --neu-danger: #f44336;
+        --neu-shadow-light: #ffffff;
+        --neu-shadow-dark: rgba(163, 177, 198, 0.6);
+        --neu-border-radius: 16px;
+    }
+
+    body {
+        background-color: var(--neu-background);
+        color: var(--neu-text-primary);
+    }
+
+    .container-fluid {
+        padding: 2rem;
+    }
+
+    h3 {
+        color: var(--neu-text-primary);
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+    }
+
+    .text-muted {
+        color: var(--neu-text-secondary) !important;
+        font-weight: 400;
+    }
+
+    /* Neumorphic Card */
+    .neu-card {
+        background: var(--neu-background);
+        border-radius: var(--neu-border-radius);
+        box-shadow: 8px 8px 16px var(--neu-shadow-dark), 
+                   -8px -8px 16px var(--neu-shadow-light);
+        border: none;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    /* Neumorphic Card Header */
+    .neu-card .card-header {
+        background: var(--neu-background);
+        border-bottom: none;
+        padding: 1.5rem 2rem 1rem;
+    }
+
+    /* Neumorphic Tabs */
+    .nav-tabs {
+        border-bottom: none;
+        margin-bottom: 1.5rem;
+        display: flex;
+        gap: 1rem;
+    }
+
+    .nav-tabs .nav-link {
+        border: none;
+        color: var(--neu-text-secondary);
+        padding: 1rem 1.5rem;
+        font-weight: 500;
+        border-radius: var(--neu-border-radius);
+        transition: all 0.3s ease;
+        background: var(--neu-background);
+        box-shadow: inset 2px 2px 5px var(--neu-shadow-dark), 
+                   inset -2px -2px 5px var(--neu-shadow-light);
+    }
+
+    .nav-tabs .nav-link.active {
+        color: var(--neu-accent);
+        font-weight: 600;
+        box-shadow: 5px 5px 10px var(--neu-shadow-dark), 
+                  -5px -5px 10px var(--neu-shadow-light);
+    }
+
+    .nav-tabs .nav-link:hover:not(.active) {
+        color: var(--neu-accent);
+    }
+
+    /* Table Styling */
+    .pendaftar-table {
+        border-collapse: separate;
+        border-spacing: 0 0.8rem;
+        width: 100%;
+        margin-bottom: 0;
+    }
+
+    .pendaftar-table thead th {
+        background-color: transparent; 
+        border: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--neu-text-secondary);
+        padding: 0.75rem 1.5rem;
+    }
+
+    .pendaftar-table tbody tr {
+        background: var(--neu-background);
+        border-radius: var(--neu-border-radius);
+        box-shadow: 5px 5px 10px var(--neu-shadow-dark), 
+                   -5px -5px 10px var(--neu-shadow-light);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .pendaftar-table tbody tr:hover {
+        transform: translateY(-3px);
+        box-shadow: 7px 7px 14px var(--neu-shadow-dark), 
+                   -7px -7px 14px var(--neu-shadow-light);
+    }
+
+    .pendaftar-table tbody td {
+        border: none;
+        vertical-align: middle;
+        font-size: 0.95rem;
+        padding: 1.25rem 1.5rem;
+    }
+
+    .pendaftar-table tbody td:first-child {
+        border-top-left-radius: var(--neu-border-radius);
+        border-bottom-left-radius: var(--neu-border-radius);
+    }
+
+    .pendaftar-table tbody td:last-child {
+        border-top-right-radius: var(--neu-border-radius);
+        border-bottom-right-radius: var(--neu-border-radius);
+    }
+
+    /* Avatar Styling */
+    .pendaftar-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: var(--neu-background);
+        color: var(--neu-accent);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 1.2rem;
+        margin-right: 1rem;
+        box-shadow: inset 2px 2px 5px var(--neu-shadow-dark), 
+                   inset -2px -2px 5px var(--neu-shadow-light);
+    }
+
+    .pendaftar-name {
+        font-weight: 600;
+        color: var(--neu-text-primary);
+        margin-bottom: 0.25rem;
+    }
+
+    .pendaftar-details {
+        font-size: 0.85rem;
+        color: var(--neu-text-secondary);
+    }
+
+    /* Badge Styling */
+    .badge {
+        font-weight: 500;
+        padding: 0.5rem 1rem;
+        border-radius: 30px;
+        box-shadow: 3px 3px 6px var(--neu-shadow-dark), 
+                   -3px -3px 6px var(--neu-shadow-light);
+    }
+
+    .bg-warning {
+        background-color: var(--neu-warning) !important;
+        color: #212529 !important;
+    }
+
+    .bg-success {
+        background-color: var(--neu-success) !important;
+    }
+
+    .bg-danger {
+        background-color: var(--neu-danger) !important;
+    }
+
+    /* Button Styling */
+    .neu-btn {
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 10px;
+        background: var(--neu-background);
+        color: var(--neu-text-secondary);
+        box-shadow: 5px 5px 10px var(--neu-shadow-dark), 
+                   -5px -5px 10px var(--neu-shadow-light);
+        transition: all 0.3s ease;
+        font-weight: 500;
+    }
+
+    .neu-btn:hover {
+        box-shadow: 7px 7px 14px var(--neu-shadow-dark), 
+                    -7px -7px 14px var(--neu-shadow-light);
+        color: var(--neu-accent);
+    }
+
+    .neu-btn:active {
+        box-shadow: inset 2px 2px 5px var(--neu-shadow-dark), 
+                    inset -2px -2px 5px var(--neu-shadow-light);
+    }
+
+    .neu-btn-success {
+        color: var(--neu-success);
+    }
+
+    .neu-btn-success:hover {
+        color: var(--neu-success);
+    }
+
+    .neu-btn-danger {
+        color: var(--neu-danger);
+    }
+
+    .neu-btn-danger:hover {
+        color: var(--neu-danger);
+    }
+
+    .neu-btn-info {
+        color: var(--neu-accent);
+    }
+
+    .neu-btn-info:hover {
+        color: var(--neu-accent);
+    }
+
+    .action-buttons .neu-btn {
+        margin-right: 0.5rem;
+        padding: 0.6rem 0.8rem;
+        font-size: 0.9rem;
+    }
+
+    .action-buttons .neu-btn:last-child {
+         margin-right: 0;
+    }
+
+    .action-buttons form {
+        display: inline-block; 
+    }
+
+    /* Search Bar */
+    .search-bar {
+        max-width: 400px;
+        margin-bottom: 2rem;
+    }
+
+    .search-input-container {
+        position: relative;
+        border-radius: 50px;
+        background: var(--neu-background);
+        box-shadow: inset 5px 5px 10px var(--neu-shadow-dark), 
+                    inset -5px -5px 10px var(--neu-shadow-light);
+        display: flex;
+        align-items: center;
+        padding: 0.5rem 1rem;
+    }
+
+    .search-input {
+        border: none;
+        background: transparent;
+        padding: 0.5rem;
+        width: 100%;
+        outline: none;
+        color: var(--neu-text-primary);
+    }
+
+    .search-btn {
+        background: transparent;
+        border: none;
+        color: var(--neu-text-secondary);
+        padding: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: color 0.2s ease;
+    }
+
+    .search-btn:hover {
+        color: var(--neu-accent);
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 4rem 1rem;
+        color: var(--neu-text-secondary);
+        background: var(--neu-background);
+        border-radius: var(--neu-border-radius);
+        box-shadow: inset 5px 5px 10px var(--neu-shadow-dark), 
+                    inset -5px -5px 10px var(--neu-shadow-light);
+        margin: 1.5rem;
+    }
+
+    .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 1.5rem;
+        display: block;
+        color: var(--neu-text-secondary);
+        opacity: 0.7;
+    }
+
+    /* Alert Styling */
+    .alert {
+        border-radius: var(--neu-border-radius);
+        border: none;
+        box-shadow: 5px 5px 10px var(--neu-shadow-dark), 
+                   -5px -5px 10px var(--neu-shadow-light);
+        padding: 1rem 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    /* Back Button */
+    .back-btn {
+        display: inline-flex;
+        align-items: center;
+        margin-top: 2rem;
+        font-weight: 500;
+    }
+
+    .back-btn i {
+        margin-right: 0.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h3>Kelola Pendaftar <span class="text-muted">- {{ ukm.nama }}</span></h3>
+
+    <!-- Pesan Flash -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Bar Pencarian -->
+    <div class="search-bar">
+        <form method="get" action="">
+            <div class="search-input-container">
+                <input type="text" class="search-input" name="q" placeholder="Cari nama atau NPM..." value="{{ request.GET.q|default:'' }}">
+                <button class="search-btn" type="submit"><i class="fas fa-search"></i></button>
+                {% if request.GET.q %}
+                    <a href="{% url 'view_pendaftar' %}" class="search-btn" title="Hapus Filter"><i class="fas fa-times"></i></a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+
+    <div class="neu-card">
+        <div class="card-header">
+            <!-- Navigasi Tab -->
+            <ul class="nav nav-tabs" id="pendaftarTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="menunggu-tab" data-bs-toggle="tab" data-bs-target="#menunggu-tab-pane" type="button" role="tab" aria-controls="menunggu-tab-pane" aria-selected="true">
+                        <i class="fas fa-hourglass-half me-2"></i> Menunggu
+                        {% if pendaftar_menunggu.count > 0 %}
+                            <span class="badge bg-warning ms-2">{{ pendaftar_menunggu.count }}</span>
+                        {% endif %}
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="diterima-tab" data-bs-toggle="tab" data-bs-target="#diterima-tab-pane" type="button" role="tab" aria-controls="diterima-tab-pane" aria-selected="false">
+                         <i class="fas fa-check-circle me-2"></i> Diterima
+                         {% if pendaftar_diterima.count > 0 %}
+                            <span class="badge bg-success ms-2">{{ pendaftar_diterima.count }}</span>
+                        {% endif %}
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="ditolak-tab" data-bs-toggle="tab" data-bs-target="#ditolak-tab-pane" type="button" role="tab" aria-controls="ditolak-tab-pane" aria-selected="false">
+                         <i class="fas fa-times-circle me-2"></i> Ditolak
+                         {% if pendaftar_ditolak.count > 0 %}
+                            <span class="badge bg-danger ms-2">{{ pendaftar_ditolak.count }}</span>
+                         {% endif %}
+                    </button>
+                </li>
+            </ul>
+        </div>
+
+        <div class="card-body p-4">
+            <!-- Konten Tab -->
+            <div class="tab-content" id="pendaftarTabContent">
+                <div class="tab-pane fade show active" id="menunggu-tab-pane" role="tabpanel" aria-labelledby="menunggu-tab" tabindex="0">
+                    {% if pendaftar_menunggu %}
+                        <div class="table-responsive">
+                            <table class="table pendaftar-table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" style="width: 40%;">Nama Pendaftar</th>
+                                        <th scope="col">Tanggal Daftar</th>
+                                        <th scope="col" class="text-center">Status</th>
+                                        <th scope="col" class="text-end">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for p in pendaftar_menunggu %}
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                 <div class="pendaftar-avatar"> 
+                                                    {{ p.mahasiswa.nama|slice:':1'|upper }}
+                                                 </div>
+                                                 <div>
+                                                     <div class="pendaftar-name">{{ p.mahasiswa.nama }}</div>
+                                                     <div class="pendaftar-details">NPM: {{ p.mahasiswa.nim }}</div>
+                                                 </div>
+                                            </div>
+                                        </td>
+                                        <td>{{ p.created_at|date:"d M Y, H:i" }}</td>
+                                        <td class="text-center">
+                                            <span class="badge bg-warning">{{ p.status|title }}</span>
+                                        </td>
+                                        <td class="text-end action-buttons">
+                                            <a href="{% url 'view_or_start_conversation' target_user_id=p.mahasiswa.user.id %}" class="neu-btn neu-btn-info" title="Kirim Pesan">
+                                                <i class="fas fa-envelope"></i>
+                                            </a>
+                                            <a href="{% url 'verify_pendaftar' pendaftar_id=p.id %}" class="neu-btn neu-btn-primary" title="Lihat Detail">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                         <div class="empty-state">
+                            <i class="fas fa-box-open"></i>
+                            <p>Tidak ada pendaftar yang menunggu verifikasi.</p>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="tab-pane fade" id="diterima-tab-pane" role="tabpanel" aria-labelledby="diterima-tab" tabindex="0">
+                    {% if pendaftar_diterima %}
+                         <div class="table-responsive">
+                            <table class="table pendaftar-table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" style="width: 50%;">Nama Pendaftar</th>
+                                        <th scope="col">Tanggal Daftar</th>
+                                        <th scope="col" class="text-center">Status</th>
+                                        <th scope="col" class="text-end">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for p in pendaftar_diterima %}
+                                     <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                 <div class="pendaftar-avatar">
+                                                    {{ p.mahasiswa.nama|slice:':1'|upper }}
+                                                 </div>
+                                                 <div>
+                                                     <div class="pendaftar-name">{{ p.mahasiswa.nama }}</div>
+                                                     <div class="pendaftar-details">NPM: {{ p.mahasiswa.nim }}</div>
+                                                 </div>
+                                            </div>
+                                        </td>
+                                        <td>{{ p.created_at|date:"d M Y, H:i" }}</td>
+                                        <td class="text-center">
+                                            <span class="badge bg-success">{{ p.status|title }}</span>
+                                        </td>
+                                        <td class="text-end action-buttons">
+                                            <a href="{% url 'view_or_start_conversation' target_user_id=p.mahasiswa.user.id %}" class="neu-btn neu-btn-info" title="Lihat/Balas Percakapan">
+                                                <i class="fas fa-comments"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                         <div class="empty-state">
+                             <i class="fas fa-user-check"></i>
+                             <p>Belum ada pendaftar yang diterima.</p>
+                         </div>
+                    {% endif %}
+                </div>
+
+                <div class="tab-pane fade" id="ditolak-tab-pane" role="tabpanel" aria-labelledby="ditolak-tab" tabindex="0">
+                    {% if pendaftar_ditolak %}
+                         <div class="table-responsive">
+                            <table class="table pendaftar-table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" style="width: 50%;">Nama Pendaftar</th>
+                                        <th scope="col">Tanggal Daftar</th>
+                                        <th scope="col" class="text-center">Status</th>
+                                        <th scope="col" class="text-end">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for p in pendaftar_ditolak %}
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                 <div class="pendaftar-avatar">
+                                                    {{ p.mahasiswa.nama|slice:':1'|upper }}
+                                                 </div>
+                                                 <div>
+                                                     <div class="pendaftar-name">{{ p.mahasiswa.nama }}</div>
+                                                     <div class="pendaftar-details">NPM: {{ p.mahasiswa.nim }}</div>
+                                                 </div>
+                                            </div>
+                                        </td>
+                                        <td>{{ p.created_at|date:"d M Y, H:i" }}</td>
+                                        <td class="text-center">
+                                            <span class="badge bg-danger">{{ p.status|title }}</span>
+                                        </td>
+                                        <td class="text-end action-buttons">
+                                            <a href="{% url 'view_or_start_conversation' target_user_id=p.mahasiswa.user.id %}" class="neu-btn neu-btn-info" title="Lihat/Balas Percakapan">
+                                                <i class="fas fa-comments"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                         </div>
+                    {% else %}
+                         <div class="empty-state">
+                             <i class="fas fa-user-times"></i>
+                             <p>Belum ada pendaftar yang ditolak.</p>
+                         </div>
+                    {% endif %}
+                </div>
+            </div> 
+        </div> 
+    </div>
+
+    <a href="{% url 'admin_dashboard' %}" class="neu-btn back-btn">
+        <i class="fas fa-arrow-left"></i> Kembali ke Dashboard
+    </a>
+</div> 
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const tabElList = document.querySelectorAll('#pendaftarTab button[data-bs-toggle="tab"]');
+        const lastActiveTab = localStorage.getItem('pendaftarActiveTab');
+
+        tabElList.forEach(tabEl => {
+          tabEl.addEventListener('shown.bs.tab', event => {
+            localStorage.setItem('pendaftarActiveTab', event.target.id);
+          });
+        });
+
+        if (lastActiveTab) {
+          const triggerEl = document.querySelector('#' + lastActiveTab);
+          if (triggerEl) {
+              const tab = new bootstrap.Tab(triggerEl);
+              tab.show();
+          }
+        } else {
+             const firstTabEl = document.querySelector('#pendaftarTab button');
+             if (firstTabEl){
+                 const firstTab = new bootstrap.Tab(firstTabEl);
+                 firstTab.show();
+             }
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,495 @@
+{% extends 'base_admin.html' %}
+{% load widget_tweaks %}
+
+{% block title %}Kelola Informasi UKM{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary-color: #6366f1;
+        --surface-color: #f0f2f5;
+        --text-primary: #444;
+        --text-secondary: #666;
+        --shadow-light: rgba(255, 255, 255, 0.8);
+        --shadow-dark: rgba(163, 177, 198, 0.4);
+    }
+
+    body {
+        background-color: var(--surface-color);
+    }
+
+    /* Neumorphic Card */
+    .card-neumorphic {
+        background: var(--surface-color);
+        border-radius: 20px;
+        box-shadow: 10px 10px 20px var(--shadow-dark), 
+                   -10px -10px 20px var(--shadow-light);
+        border: none;
+        overflow: hidden;
+    }
+
+    .card-header-neumorphic {
+        background: var(--surface-color);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        padding: 1.5rem;
+    }
+
+    /* Neumorphic Form Controls */
+    .form-control, .form-select {
+        background-color: var(--surface-color);
+        border: none;
+        border-radius: 12px;
+        padding: 12px 16px;
+        box-shadow: inset 4px 4px 8px var(--shadow-dark), 
+                    inset -4px -4px 8px var(--shadow-light);
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus, .form-select:focus {
+        box-shadow: inset 2px 2px 5px var(--shadow-dark), 
+                    inset -2px -2px 5px var(--shadow-light);
+        outline: none;
+        border: 1px solid rgba(99, 102, 241, 0.4);
+    }
+
+    /* Neumorphic Buttons */
+    .btn-neumorphic {
+        border: none;
+        box-shadow: 5px 5px 10px var(--shadow-dark), 
+                   -5px -5px 10px var(--shadow-light);
+        border-radius: 12px;
+        padding: 10px 20px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .btn-neumorphic:hover {
+        box-shadow: 7px 7px 14px var(--shadow-dark), 
+                   -7px -7px 14px var(--shadow-light);
+    }
+
+    .btn-neumorphic:active {
+        box-shadow: inset 3px 3px 6px var(--shadow-dark), 
+                    inset -3px -3px 6px var(--shadow-light);
+    }
+
+    .btn-primary-neumorphic {
+        background: linear-gradient(145deg, #6d70f9, #5c5edb);
+        color: white;
+    }
+
+    .btn-outline-neumorphic {
+        background: var(--surface-color);
+        color: var(--text-primary);
+    }
+
+    /* Neumorphic Tabs */
+    .nav-tabs-neumorphic {
+        border: none;
+        margin-bottom: 2rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        padding: 15px;
+    }
+
+    .nav-tabs-neumorphic .nav-link {
+        border: none;
+        border-radius: 12px;
+        padding: 12px 20px;
+        background: var(--surface-color);
+        color: var(--text-secondary);
+        box-shadow: 5px 5px 10px var(--shadow-dark), 
+                   -5px -5px 10px var(--shadow-light);
+        transition: all 0.3s ease;
+        margin-right: 10px;
+    }
+
+    .nav-tabs-neumorphic .nav-link:hover {
+        color: var(--primary-color);
+    }
+
+    .nav-tabs-neumorphic .nav-link.active {
+        background: var(--surface-color);
+        color: var(--primary-color);
+        box-shadow: inset 3px 3px 6px var(--shadow-dark), 
+                    inset -3px -3px 6px var(--shadow-light);
+    }
+
+    /* Tab Content */
+    .tab-pane {
+        padding: 1.5rem 0;
+    }
+
+    /* Logo Preview */
+    .logo-preview-container {
+        margin-top: 1rem;
+        background: var(--surface-color);
+        border-radius: 12px;
+        padding: 1rem;
+        box-shadow: inset 3px 3px 6px var(--shadow-dark), 
+                    inset -3px -3px 6px var(--shadow-light);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .logo-preview {
+        max-width: 150px;
+        max-height: 100px;
+        object-fit: contain;
+    }
+
+    /* Checkbox and Radio Containers */
+    .form-check-list {
+        list-style: none;
+        padding: 1.5rem;
+        border-radius: 12px;
+        background: var(--surface-color);
+        box-shadow: inset 3px 3px 6px var(--shadow-dark), 
+                    inset -3px -3px 6px var(--shadow-light);
+    }
+
+    .form-check {
+        margin-bottom: 0.8rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .form-check-input {
+        width: 1.2rem;
+        height: 1.2rem;
+        margin-right: 0.5rem;
+        box-shadow: 1px 1px 3px var(--shadow-dark), 
+                   -1px -1px 3px var(--shadow-light);
+        border: none;
+    }
+
+    .form-check-input:checked {
+        background-color: var(--primary-color);
+    }
+
+    /* Section Titles */
+    .section-title {
+        color: var(--text-primary);
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        position: relative;
+        display: inline-block;
+    }
+
+    .section-title:after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        width: 50px;
+        height: 3px;
+        background: var(--primary-color);
+        border-radius: 3px;
+    }
+
+    /* Alerts */
+    .alert-neumorphic {
+        border-radius: 12px;
+        box-shadow: 5px 5px 10px var(--shadow-dark), 
+                   -5px -5px 10px var(--shadow-light);
+        border: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="card-neumorphic mb-4">
+        <div class="card-header-neumorphic">
+            <h4 class="mb-0 d-flex align-items-center">
+                <i class="fas fa-edit me-3 text-primary"></i> Kelola Informasi UKM
+            </h4>
+        </div>
+        <div class="card-body p-4">
+
+            <!-- Tampilkan pesan error global form -->
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger alert-neumorphic alert-dismissible fade show" role="alert">
+                    {{ form.non_field_errors }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endif %}
+
+            <form method="post" enctype="multipart/form-data" id="ukmInfoForm">
+                {% csrf_token %}
+
+                <!-- Navigasi Tab -->
+                <ul class="nav nav-tabs-neumorphic" id="ukmInfoTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="umum-tab" data-bs-toggle="tab" data-bs-target="#umum-tab-pane" type="button" role="tab" aria-controls="umum-tab-pane" aria-selected="true">
+                            <i class="fas fa-info-circle me-2"></i>Informasi Umum
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="visimisi-tab" data-bs-toggle="tab" data-bs-target="#visimisi-tab-pane" type="button" role="tab" aria-controls="visimisi-tab-pane" aria-selected="false">
+                            <i class="fas fa-bullseye me-2"></i>Visi & Misi
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="kegiatan-tab" data-bs-toggle="tab" data-bs-target="#kegiatan-tab-pane" type="button" role="tab" aria-controls="kegiatan-tab-pane" aria-selected="false">
+                            <i class="fas fa-calendar-alt me-2"></i>Kegiatan
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="struktur-tab" data-bs-toggle="tab" data-bs-target="#struktur-tab-pane" type="button" role="tab" aria-controls="struktur-tab-pane" aria-selected="false">
+                            <i class="fas fa-sitemap me-2"></i>Struktur
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="pendaftaran-tab" data-bs-toggle="tab" data-bs-target="#pendaftaran-tab-pane" type="button" role="tab" aria-controls="pendaftaran-tab-pane" aria-selected="false">
+                            <i class="fas fa-user-plus me-2"></i>Pendaftaran
+                        </button>
+                    </li>
+                </ul>
+
+                <!-- Konten Tab -->
+                <div class="tab-content" id="ukmInfoTabContent">
+
+                    <!-- Tab 1: Informasi Umum -->
+                    <div class="tab-pane fade show active" id="umum-tab-pane" role="tabpanel" aria-labelledby="umum-tab" tabindex="0">
+                        <h5 class="section-title">Informasi Dasar UKM</h5>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="mb-4">
+                                    <label for="{{ form.nama.id_for_label }}" class="form-label">Nama UKM <span class="text-danger">*</span></label>
+                                    {% render_field form.nama class="form-control" placeholder="Masukkan nama UKM" %}
+                                    {% for error in form.nama.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                                </div>
+                                <div class="mb-4">
+                                    <label for="{{ form.deskripsi_singkat.id_for_label }}" class="form-label">Deskripsi Singkat <span class="text-danger">*</span></label>
+                                    {% render_field form.deskripsi_singkat class="form-control" %}
+                                    {% for error in form.deskripsi_singkat.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-4">
+                                    <label for="{{ form.logo.id_for_label }}" class="form-label">Logo UKM</label>
+                                    {% render_field form.logo class="form-control" id="id_logo_input" accept="image/*" %}
+                                    <div class="logo-preview-container mt-3" id="logo_preview_container">
+                                        <img id="logo_preview" src="{% if form.instance.logo %}{{ form.instance.logo.url }}{% else %}#{% endif %}" alt="Preview Logo" class="logo-preview mb-2">
+                                        <small class="text-muted">Preview Logo Saat Ini</small>
+                                    </div>
+                                    {% for error in form.logo.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                                    <small class="form-text text-muted mt-2">Format: JPG, PNG. Ukuran maks: 2MB.</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- /Tab 1 -->
+
+                    <!-- Tab 2: Visi & Misi -->
+                    <div class="tab-pane fade" id="visimisi-tab-pane" role="tabpanel" aria-labelledby="visimisi-tab" tabindex="0">
+                        <h5 class="section-title">Visi dan Misi UKM</h5>
+                        <div class="mb-4">
+                            <label for="{{ form.visi.id_for_label }}" class="form-label">Visi <span class="text-danger">*</span></label>
+                            {% render_field form.visi class="form-control" %}
+                            {% for error in form.visi.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div class="mb-4">
+                            <label for="{{ form.misi.id_for_label }}" class="form-label">Misi <span class="text-danger">*</span></label>
+                            {% render_field form.misi class="form-control" %}
+                            {% for error in form.misi.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                        </div>
+                    </div><!-- /Tab 2 -->
+
+                    <!-- Tab 3: Kegiatan & Jadwal -->
+                    <div class="tab-pane fade" id="kegiatan-tab-pane" role="tabpanel" aria-labelledby="kegiatan-tab" tabindex="0">
+                        <h5 class="section-title">Detail Kegiatan Rutin</h5>
+                        <div class="mb-4">
+                            <label for="{{ form.jenis_kegiatan.id_for_label }}" class="form-label">Jenis Kegiatan Utama <span class="text-danger">*</span></label>
+                            {% render_field form.jenis_kegiatan class="form-select" %}
+                            {% for error in form.jenis_kegiatan.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                        </div>
+
+                        <h6 class="section-title">Jadwal Kegiatan Rutin</h6>
+                        <div class="row g-4">
+                            <div class="col-md-3 col-6">
+                                <label for="{{ form.hari_mulai.id_for_label }}" class="form-label">Hari Mulai <span class="text-danger">*</span></label>
+                                {% render_field form.hari_mulai class="form-select" %}
+                                {% for error in form.hari_mulai.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <label for="{{ form.hari_selesai.id_for_label }}" class="form-label">Hari Selesai <span class="text-danger">*</span></label>
+                                {% render_field form.hari_selesai class="form-select" %}
+                                {% for error in form.hari_selesai.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <label for="{{ form.waktu_mulai.id_for_label }}" class="form-label">Waktu Mulai <span class="text-danger">*</span></label>
+                                {% render_field form.waktu_mulai class="form-control" type="time" %}
+                                {% for error in form.waktu_mulai.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <label for="{{ form.waktu_selesai.id_for_label }}" class="form-label">Waktu Selesai <span class="text-danger">*</span></label>
+                                {% render_field form.waktu_selesai class="form-control" type="time" %}
+                                {% for error in form.waktu_selesai.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                            </div>
+                        </div>
+                    </div><!-- /Tab 3 -->
+
+                    <!-- Tab 4: Struktur -->
+                    <div class="tab-pane fade" id="struktur-tab-pane" role="tabpanel" aria-labelledby="struktur-tab" tabindex="0">
+                        <h5 class="section-title">Pengurus Utama</h5>
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="mb-4">
+                                    <label for="{{ form.ketua_ukm.id_for_label }}" class="form-label">Nama Ketua UKM <span class="text-danger">*</span></label>
+                                    {% render_field form.ketua_ukm class="form-control" placeholder="Nama lengkap ketua" %}
+                                    {% for error in form.ketua_ukm.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-4">
+                                    <label for="{{ form.pengurus_pendaftaran.id_for_label }}" class="form-label">Nama Pengurus Pendaftaran <span class="text-danger">*</span></label>
+                                    {% render_field form.pengurus_pendaftaran class="form-control" placeholder="Nama pengurus yang menangani pendaftaran" %}
+                                    {% for error in form.pengurus_pendaftaran.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- /Tab 4 -->
+
+                    <!-- Tab 5: Pendaftaran -->
+                    <div class="tab-pane fade" id="pendaftaran-tab-pane" role="tabpanel" aria-labelledby="pendaftaran-tab" tabindex="0">
+                        <h5 class="section-title">Informasi Proses Pendaftaran</h5>
+
+                        <div class="row g-4 mb-4">
+                            <div class="col-md-6">
+                                <label for="{{ form.periode_pendaftaran_mulai.id_for_label }}" class="form-label">Periode Pendaftaran Mulai</label>
+                                {% render_field form.periode_pendaftaran_mulai class="form-control" type="date" %}
+                                {% for error in form.periode_pendaftaran_mulai.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.periode_pendaftaran_selesai.id_for_label }}" class="form-label">Periode Pendaftaran Selesai</label>
+                                {% render_field form.periode_pendaftaran_selesai class="form-control" type="date" %}
+                                {% for error in form.periode_pendaftaran_selesai.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="{{ form.persyaratan_umum.id_for_label }}" class="form-label">Persyaratan Umum <span class="text-danger">*</span></label>
+                            {% render_field form.persyaratan_umum class="form-control" %}
+                            {% for error in form.persyaratan_umum.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                        </div>
+
+                        <div class="row g-4">
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label d-block mb-2">Berkas yang Dibutuhkan <span class="text-danger">*</span></label>
+                                <div class="form-check-list">
+                                {% for choice in form.berkas_dibutuhkan %}
+                                    <div class="form-check">
+                                        {{ choice.tag }}
+                                        <label class="form-check-label" for="{{ choice.id_for_label }}">
+                                            {{ choice.choice_label }}
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                                </div>
+                                {% for error in form.berkas_dibutuhkan.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label d-block mb-2">Alur Pendaftaran <span class="text-danger">*</span></label>
+                                <div class="form-check-list">
+                                {% for choice in form.alur_pendaftaran %}
+                                    <div class="form-check">
+                                        {{ choice.tag }}
+                                        <label class="form-check-label" for="{{ choice.id_for_label }}">
+                                            {{ choice.choice_label }}
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                                </div>
+                                {% for error in form.alur_pendaftaran.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                            </div>
+                        </div>
+                    </div><!-- /Tab 5 -->
+
+                </div> <!-- /tab-content -->
+
+                <hr class="my-4">
+                <div class="d-flex justify-content-end gap-3">
+                    <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-neumorphic">
+                        <i class="fas fa-times me-2"></i> Batal
+                    </a>
+                    <button type="submit" class="btn btn-primary-neumorphic">
+                        <i class="fas fa-save me-2"></i> Simpan Perubahan
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+{{ form.media }}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Script untuk preview logo
+    const logoInput = document.getElementById('id_logo_input');
+    const logoPreviewContainer = document.getElementById('logo_preview_container');
+    const logoPreview = document.getElementById('logo_preview');
+
+    if (logoInput) {
+        logoInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    logoPreview.src = e.target.result;
+                    logoPreviewContainer.style.display = 'flex';
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    // Script untuk menyimpan tab aktif di local storage
+    const tabElList = document.querySelectorAll('#ukmInfoTab button[data-bs-toggle="tab"]');
+    const lastActiveTab = localStorage.getItem('ukmInfoActiveTab');
+
+    tabElList.forEach(tabEl => {
+      tabEl.addEventListener('shown.bs.tab', event => {
+        localStorage.setItem('ukmInfoActiveTab', event.target.id);
+      });
+    });
+
+    if (lastActiveTab) {
+      const triggerEl = document.querySelector('#' + lastActiveTab);
+      if (triggerEl) {
+          const tab = new bootstrap.Tab(triggerEl);
+          tab.show();
+      }
+    }
+
+    // Animate form elements on tab change
+    const tabs = document.querySelectorAll('#ukmInfoTab button');
+    tabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            const targetPaneId = this.getAttribute('data-bs-target');
+            const targetPane = document.querySelector(targetPaneId);
+            
+            // Add slight animation to form elements
+            if (targetPane) {
+                const formElements = targetPane.querySelectorAll('.form-control, .form-select, .form-check-list');
+                formElements.forEach((el, index) => {
+                    el.style.opacity = '0';
+                    el.style.transform = 'translateY(10px)';
+                    setTimeout(() => {
+                        el.style.transition = 'all 0.3s ease';
+                        el.style.opacity = '1';
+                        el.style.transform = 'translateY(0)';
+                    }, 50 * index);
+                });
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

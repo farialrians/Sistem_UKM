@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3>Dashboard Admin UKM</h3>
+    </div>
+    <div class="card-body">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        {% if ukm %}
+            <h4>{{ ukm.nama }}</h4>
+            <p>{{ ukm.deskripsi_singkat|safe }}</p>
+            <a href="{% url 'upload_ukm_info' %}" class="btn btn-primary">Edit Info UKM</a>
+            <a href="{% url 'view_pendaftar' %}" class="btn btn-success">Lihat Pendaftar</a>
+        {% else %}
+            <p>Anda belum mengelola UKM. Silakan unggah info UKM.</p>
+            <a href="{% url 'upload_ukm_info' %}" class="btn btn-primary">Unggah Info UKM</a>
+        {% endif %}
+        <a href="{% url 'logout' %}" class="btn btn-danger mt-3" onclick="return confirm('Apakah Anda yakin ingin logout?')">Logout</a>
+    </div>
+</div>
+{% endblock %}

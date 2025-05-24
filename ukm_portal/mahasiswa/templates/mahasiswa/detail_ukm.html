@@ -1,0 +1,464 @@
+{% extends 'base_mahasiswa.html' %}
+{% load static %}
+
+{% block extra_css %}
+<!-- Add Remixicon for better icons -->
+<link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+<style>
+    :root {
+        --primary-color: #6c5ce7;
+        --primary-light: #a29bfe;
+        --background-color: #ecf0f3;
+        --card-color: #ecf0f3;
+        --text-color: #333;
+        --text-muted: #666;
+        --border-radius: 16px;
+        --shadow-distance: 6px;
+        --neu-light: #ffffff;
+        --neu-dark: #d1d9e6;
+    }
+    
+    body {
+        background-color: var(--background-color);
+        color: var(--text-color);
+    }
+    
+    .neu-card {
+        background-color: var(--card-color);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-distance) var(--shadow-distance) calc(var(--shadow-distance)*2) var(--neu-dark),
+                    calc(var(--shadow-distance)*-1) calc(var(--shadow-distance)*-1) calc(var(--shadow-distance)*2) var(--neu-light);
+        border: none;
+        transition: all 0.3s ease;
+    }
+    
+    .neu-inset {
+        background-color: var(--card-color);
+        border-radius: var(--border-radius);
+        box-shadow: inset var(--shadow-distance) var(--shadow-distance) calc(var(--shadow-distance)*1.5) var(--neu-dark),
+                    inset calc(var(--shadow-distance)*-1) calc(var(--shadow-distance)*-1) calc(var(--shadow-distance)*1.5) var(--neu-light);
+        border: none;
+    }
+    
+    .neu-button {
+        background-color: var(--card-color);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-distance) var(--shadow-distance) calc(var(--shadow-distance)*2) var(--neu-dark),
+                    calc(var(--shadow-distance)*-1) calc(var(--shadow-distance)*-1) calc(var(--shadow-distance)*2) var(--neu-light);
+        border: none;
+        transition: all 0.2s ease;
+    }
+    
+    .neu-button:hover {
+        box-shadow: calc(var(--shadow-distance)*0.7) calc(var(--shadow-distance)*0.7) calc(var(--shadow-distance)*1.4) var(--neu-dark),
+                    calc(var(--shadow-distance)*-0.7) calc(var(--shadow-distance)*-0.7) calc(var(--shadow-distance)*1.4) var(--neu-light);
+    }
+    
+    .neu-button:active {
+        box-shadow: inset var(--shadow-distance) var(--shadow-distance) calc(var(--shadow-distance)*1.5) var(--neu-dark),
+                    inset calc(var(--shadow-distance)*-1) calc(var(--shadow-distance)*-1) calc(var(--shadow-distance)*1.5) var(--neu-light);
+    }
+    
+    .neu-button-primary {
+        background-color: var(--primary-color);
+        color: white;
+        box-shadow: var(--shadow-distance) var(--shadow-distance) calc(var(--shadow-distance)*2) rgba(108, 92, 231, 0.3),
+                    calc(var(--shadow-distance)*-1) calc(var(--shadow-distance)*-1) calc(var(--shadow-distance)*2) rgba(108, 92, 231, 0.1);
+    }
+    
+    .neu-button-primary:hover {
+        background-color: var(--primary-light);
+        box-shadow: calc(var(--shadow-distance)*0.7) calc(var(--shadow-distance)*0.7) calc(var(--shadow-distance)*1.4) rgba(108, 92, 231, 0.3),
+                    calc(var(--shadow-distance)*-0.7) calc(var(--shadow-distance)*-0.7) calc(var(--shadow-distance)*1.4) rgba(108, 92, 231, 0.1);
+    }
+    
+    .neu-icon {
+        background-color: var(--card-color);
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: var(--shadow-distance) var(--shadow-distance) calc(var(--shadow-distance)*2) var(--neu-dark),
+                    calc(var(--shadow-distance)*-1) calc(var(--shadow-distance)*-1) calc(var(--shadow-distance)*2) var(--neu-light);
+    }
+    
+    .neu-icon-sm {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .scrollable-column {
+        height: calc(100vh - 150px);
+        overflow-y: auto;
+        position: relative;
+        padding: 20px;
+        scrollbar-width: thin;
+    }
+    
+    .fixed-column {
+        position: sticky;
+        top: 20px;
+    }
+    
+    /* Custom scrollbar styling */
+    .scrollable-column::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    .scrollable-column::-webkit-scrollbar-track {
+        background: var(--neu-light);
+        border-radius: 10px;
+    }
+    
+    .scrollable-column::-webkit-scrollbar-thumb {
+        background: var(--neu-dark);
+        border-radius: 10px;
+    }
+    
+    .scrollable-column::-webkit-scrollbar-thumb:hover {
+        background: var(--text-muted);
+    }
+    
+    .section-title {
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 20px;
+        position: relative;
+        padding-left: 20px;
+    }
+    
+    .section-title::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 8px;
+        height: 20px;
+        background-color: var(--primary-light);
+        border-radius: 4px;
+    }
+    
+    .timeline-dot {
+        width: 30px;
+        height: 30px;
+        background-color: var(--card-color);
+        border-radius: 50%;
+        box-shadow: var(--shadow-distance) var(--shadow-distance) calc(var(--shadow-distance)*1.5) var(--neu-dark),
+                    calc(var(--shadow-distance)*-1) calc(var(--shadow-distance)*-1) calc(var(--shadow-distance)*1.5) var(--neu-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary-color);
+        font-weight: bold;
+    }
+    
+    .timeline-line {
+        background: linear-gradient(to bottom, var(--neu-dark), var(--neu-light)) !important;
+        width: 3px !important;
+    }
+    
+    .status-active {
+        background: linear-gradient(145deg, #D6FDD6, #e8ffe8);
+        color: #2ecc71;
+    }
+    
+    .status-inactive {
+        background: linear-gradient(145deg, #FFDADA, #fff2f2);
+        color: #e74c3c;
+    }
+    
+    .status-pending {
+        background: linear-gradient(145deg, #FFF6D6, #fffbeb);
+        color: #f39c12;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="neu-card p-0 overflow-hidden">
+        <!-- Header with UKM Logo -->
+        <div class="p-4">
+            <div class="d-flex align-items-center">
+                {% if ukm.logo %}
+                    <div class="me-4">
+                        <div class="neu-card" style="width: 100px; height: 100px; padding: 5px;">
+                            <img src="{{ ukm.logo.url }}" alt="Logo {{ ukm.nama }}" class="img-fluid rounded-lg" style="width: 90px; height: 90px; object-fit: cover;">
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="me-4">
+                        <div class="neu-icon" style="width: 100px; height: 100px;">
+                            <i class="ri-group-line" style="font-size: 2.5rem; color: var(--primary-color);"></i>
+                        </div>
+                    </div>
+                {% endif %}
+                <div>
+                    <h3 class="m-0 fw-bold" style="color: var(--primary-color);">{{ ukm.nama }}</h3>
+                    <p class="text-muted mb-0 mt-1">
+                        <i class="ri-calendar-line me-1"></i> Est. {% now "Y" %}
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Alert Messages -->
+        {% if messages %}
+            <div class="px-4 pb-0">
+                {% for message in messages %}
+                    <div class="neu-card p-3 mb-3 {% if message.tags == 'success' %}status-active{% elif message.tags == 'error' %}status-inactive{% else %}status-pending{% endif %}">
+                        <i class="ri-information-line me-2"></i>{{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        <div class="p-4">
+            <!-- Main Content Container -->
+            <div class="row g-4">
+                <!-- Left Column - Main Info (Scrollable) -->
+                <div class="col-lg-8">
+                    <div class="scrollable-column pe-2 neu-card p-4">
+                        <!-- Deskripsi Section -->
+                        <div class="mb-5">
+                            <h5 class="section-title">
+                                Tentang UKM
+                            </h5>
+                            <div class="neu-inset p-4">
+                                <p class="text-muted mb-0">{{ ukm.deskripsi_singkat|safe }}</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Visi & Misi Section -->
+                        <div class="mb-5">
+                            <h5 class="section-title">
+                                Visi & Misi
+                            </h5>
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <div class="neu-card h-100 p-4">
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div class="neu-icon neu-icon-sm me-3">
+                                                <i class="ri-eye-line" style="color: var(--primary-color);"></i>
+                                            </div>
+                                            <h6 style="color: var(--primary-color); font-weight: 700; margin-bottom: 0;">Visi</h6>
+                                        </div>
+                                        <p class="small mb-0">{{ ukm.visi|safe }}</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="neu-card h-100 p-4">
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div class="neu-icon neu-icon-sm me-3">
+                                                <i class="ri-flag-line" style="color: var(--primary-color);"></i>
+                                            </div>
+                                            <h6 style="color: var(--primary-color); font-weight: 700; margin-bottom: 0;">Misi</h6>
+                                        </div>
+                                        <p class="small mb-0">{{ ukm.misi|safe }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Kegiatan Section -->
+                        <div class="mb-5">
+                            <h5 class="section-title">
+                                Kegiatan dan Program Kerja
+                            </h5>
+                            <div class="neu-card p-4">
+                                <div class="row g-4">
+                                    <div class="col-md-6">
+                                        <div class="d-flex">
+                                            <div class="neu-icon neu-icon-sm me-3">
+                                                <i class="ri-calendar-event-line" style="color: var(--primary-color);"></i>
+                                            </div>
+                                            <div>
+                                                <p class="small text-muted mb-1">Jenis Kegiatan</p>
+                                                <p class="mb-0 fw-medium">{{ ukm.get_jenis_kegiatan_display }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="d-flex">
+                                            <div class="neu-icon neu-icon-sm me-3">
+                                                <i class="ri-time-line" style="color: var(--primary-color);"></i>
+                                            </div>
+                                            <div>
+                                                <p class="small text-muted mb-1">Jadwal Kegiatan</p>
+                                                <p class="mb-0 fw-medium">{{ ukm.hari_mulai }} - {{ ukm.hari_selesai }}, {{ ukm.waktu_mulai }} - {{ ukm.waktu_selesai }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Syarat Section -->
+                        <div class="mb-5">
+                            <h5 class="section-title">
+                                Syarat & Ketentuan Pendaftaran
+                            </h5>
+                            <div class="neu-card p-4">
+                                <div class="mb-4">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="neu-icon neu-icon-sm me-3">
+                                            <i class="ri-checkbox-circle-line" style="color: var(--primary-color);"></i>
+                                        </div>
+                                        <h6 style="color: var(--primary-color); font-weight: 700; margin-bottom: 0;">Persyaratan Umum</h6>
+                                    </div>
+                                    <div class="neu-inset p-3">
+                                        <p class="small mb-0">{{ ukm.persyaratan_umum|safe }}</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="neu-icon neu-icon-sm me-3">
+                                            <i class="ri-file-list-line" style="color: var(--primary-color);"></i>
+                                        </div>
+                                        <h6 style="color: var(--primary-color); font-weight: 700; margin-bottom: 0;">Berkas yang Dibutuhkan</h6>
+                                    </div>
+                                    <div class="neu-inset p-3">
+                                        <ul class="list-group list-group-flush bg-transparent mb-0">
+                                            {% for berkas in ukm.berkas_dibutuhkan %}
+                                                <li class="list-group-item bg-transparent ps-0 py-2 small d-flex align-items-center border-0">
+                                                    <div class="neu-icon neu-icon-sm me-3" style="width: 25px; height: 25px;">
+                                                        <i class="ri-file-text-line" style="color: var(--primary-color); font-size: 0.8rem;"></i>
+                                                    </div>
+                                                    {{ berkas }}
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <div class="d-flex align-items-center mb-4">
+                                        <div class="neu-icon neu-icon-sm me-3">
+                                            <i class="ri-file-list-line" style="color: var(--primary-color);"></i>
+                                        </div>
+                                        <h6 style="color: var(--primary-color); font-weight: 700; margin-bottom: 0;">Alur Pendaftaran</h6>
+                                    </div>
+                                    <div class="position-relative ps-5">
+                                        <div class="timeline-line position-absolute h-100 start-0 top-0"></div>
+                                        {% for step in ukm.alur_pendaftaran %}
+                                            <div class="timeline-item position-relative mb-4">
+                                                <div class="position-absolute top-0 start-0 translate-middle-x timeline-dot">
+                                                    {{ forloop.counter }}
+                                                </div>
+                                                <div class="ms-4 ps-2 small neu-inset p-3">{{ step }}</div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right Column - Status & Contact (Fixed) -->
+                <div class="col-lg-4">
+                    <div class="fixed-column">
+                        <!-- Organization Info -->
+                        <div class="neu-card p-4 mb-4">
+                            <h5 class="section-title mb-4">
+                                Struktur Organisasi
+                            </h5>
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="neu-icon me-3">
+                                    <i class="ri-user-star-line" style="color: var(--primary-color); font-size: 1.5rem;"></i>
+                                </div>
+                                <div>
+                                    <p class="small text-muted mb-1">Ketua UKM</p>
+                                    <p class="fw-medium mb-0">{{ ukm.ketua_ukm }}</p>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="neu-icon me-3">
+                                    <i class="ri-user-settings-line" style="color: var(--primary-color); font-size: 1.5rem;"></i>
+                                </div>
+                                <div>
+                                    <p class="small text-muted mb-1">Pengurus Pendaftaran</p>
+                                    <p class="fw-medium mb-0">{{ ukm.pengurus_pendaftaran }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Registration Status -->
+                        <div class="neu-card p-4 mb-4">
+                            <h5 class="section-title mb-4">
+                                Status Pendaftaran
+                            </h5>
+                            {% if ukm.periode_pendaftaran_mulai and ukm.periode_pendaftaran_selesai %}
+                                <div class="mb-4">
+                                    <p class="small text-muted mb-1">Periode Pendaftaran</p>
+                                    <div class="d-flex align-items-center neu-inset p-3">
+                                        <i class="ri-calendar-event-fill me-2" style="color: var(--primary-color);"></i>
+                                        <p class="fw-medium mb-0">{{ ukm.periode_pendaftaran_mulai }} - {{ ukm.periode_pendaftaran_selesai }}</p>
+                                    </div>
+                                </div>
+                                {% if ukm.is_pendaftaran_aktif %}
+                                    <div class="neu-card status-active p-3">
+                                        <div class="d-flex align-items-center">
+                                            <i class="ri-checkbox-circle-fill me-2" style="font-size: 1.25rem;"></i>
+                                            <span class="fw-medium">Pendaftaran Aktif</span>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="neu-card status-inactive p-3">
+                                        <div class="d-flex align-items-center">
+                                            <i class="ri-close-circle-fill me-2" style="font-size: 1.25rem;"></i>
+                                            <span class="fw-medium">Pendaftaran Ditutup</span>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% else %}
+                                <div class="neu-card status-pending p-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="ri-error-warning-fill me-2" style="font-size: 1.25rem;"></i>
+                                        <span class="fw-medium">Periode Pendaftaran Belum Diatur</span>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="d-grid gap-3">
+                            {% if ukm.is_pendaftaran_aktif %}
+                                <a href="{% url 'daftar_ukm' ukm.id %}" class="neu-button neu-button-primary btn-lg d-flex align-items-center justify-content-center gap-2 py-3">
+                                    <i class="ri-user-add-line"></i>Daftar Sekarang
+                                </a>
+                            {% endif %}
+                            <a href="{% url 'list_ukm' %}" class="neu-button btn-lg d-flex align-items-center justify-content-center gap-2 py-3">
+                                <i class="ri-arrow-left-line"></i>Kembali ke Daftar UKM
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add smooth hover effects for neumorphic elements
+    document.addEventListener('DOMContentLoaded', function() {
+        const neuButtons = document.querySelectorAll('.neu-button');
+        
+        neuButtons.forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+            });
+            
+            button.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    });
+</script>
+{% endblock %}

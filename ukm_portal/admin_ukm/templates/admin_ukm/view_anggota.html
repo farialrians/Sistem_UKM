@@ -1,0 +1,448 @@
+{% extends 'base_admin.html' %}
+{% load static %}
+
+{% block title %}Kelola Anggota - {{ ukm.nama }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary-color: #6c5ce7;
+        --secondary-color: #a29bfe;
+        --light-bg: #f0f3f9;
+        --text-color: #444;
+        --text-muted: #8a94a6;
+        --success-color: #00b894;
+        --danger-color: #d63031;
+        --card-radius: 16px;
+        --btn-radius: 12px;
+        --input-radius: 10px;
+        --badge-radius: 8px;
+        --shadow-light: 8px 8px 16px rgba(200, 208, 231, 0.5), -8px -8px 16px rgba(255, 255, 255, 0.8);
+        --shadow-inset: inset 3px 3px 6px rgba(200, 208, 231, 0.5), inset -3px -3px 6px rgba(255, 255, 255, 0.8);
+        --shadow-small: 4px 4px 8px rgba(200, 208, 231, 0.5), -4px -4px 8px rgba(255, 255, 255, 0.8);
+    }
+    
+    body  {
+        background-color: var(--light-bg);
+        color: var(--text-color);
+    }
+    
+    h3.page-title {
+        font-weight: 600;
+        color: var(--text-color);
+        margin-bottom: 1.5rem;
+    }
+    
+    h3.page-title .text-muted {
+        font-weight: 400;
+        color: var(--text-muted) !important;
+    }
+    
+    /* Card Styling - Neumorphic */
+    .card.neumorphic {
+        background-color: var(--light-bg);
+        border-radius: var(--card-radius);
+        border: none;
+        box-shadow: var(--shadow-light);
+        transition: all 0.3s ease;
+        overflow: hidden;
+        margin-bottom: 30px;
+    }
+    
+    .card.neumorphic .card-header {
+        background-color: var(--light-bg);
+        border-bottom: 1px solid rgba(200, 208, 231, 0.3);
+        padding: 18px 25px;
+    }
+    
+    .card.neumorphic .card-header h5 {
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        color: var(--text-color);
+    }
+    
+    .card.neumorphic .card-header i {
+        color: var(--primary-color);
+        margin-right: 10px;
+    }
+    
+    .card.neumorphic .card-body {
+        padding: 1.5rem;
+    }
+    
+    /* Buttons - Neumorphic */
+    .btn.btn-neumorphic {
+        background-color: var(--light-bg);
+        border: none;
+        border-radius: var(--btn-radius);
+        box-shadow: var(--shadow-small);
+        color: var(--text-color);
+        transition: all 0.2s ease;
+        padding: 8px 16px;
+    }
+    
+    .btn.btn-neumorphic:hover {
+        box-shadow: var(--shadow-small);
+        transform: translateY(-2px);
+    }
+    
+    .btn.btn-neumorphic:active {
+        box-shadow: var(--shadow-inset);
+        transform: translateY(0);
+    }
+    
+    .btn.btn-neumorphic.btn-primary {
+        background-color: var(--primary-color);
+        color: white;
+        box-shadow: 4px 4px 8px rgba(108, 92, 231, 0.3), -2px -2px 6px rgba(255, 255, 255, 0.1);
+    }
+    
+    .btn.btn-neumorphic.btn-primary:active {
+        box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.2), inset -2px -2px 5px rgba(255, 255, 255, 0.1);
+    }
+    
+    .btn.btn-neumorphic.btn-info {
+        background-color: var(--secondary-color);
+        color: white;
+        box-shadow: 4px 4px 8px rgba(162, 155, 254, 0.3), -2px -2px 6px rgba(255, 255, 255, 0.1);
+    }
+    
+    .btn.btn-neumorphic.btn-sm {
+        padding: 5px 10px;
+        font-size: 0.85rem;
+    }
+    
+    /* Form Controls - Neumorphic */
+    .input-neumorphic {
+        border-radius: var(--input-radius);
+        background-color: var(--light-bg);
+        border: none;
+        box-shadow: var(--shadow-inset);
+        padding: 10px 15px;
+        color: var(--text-color);
+        transition: all 0.3s ease;
+    }
+    
+    .input-neumorphic:focus {
+        outline: none;
+        box-shadow: inset 4px 4px 8px rgba(200, 208, 231, 0.8), inset -4px -4px 8px rgba(255, 255, 255, 0.8);
+    }
+    
+    .input-group-neumorphic {
+        background-color: var(--light-bg);
+        border-radius: var(--input-radius);
+        box-shadow: var(--shadow-inset);
+        padding: 3px;
+    }
+    
+    .input-group-neumorphic .form-control {
+        background-color: transparent;
+        border: none;
+        box-shadow: none;
+        color: var(--text-color);
+    }
+    
+    .input-group-neumorphic .input-group-text {
+        background-color: transparent;
+        border: none;
+        color: var(--text-muted);
+    }
+    
+    .input-group-neumorphic .btn {
+        border-radius: 8px;
+        margin: 3px;
+        box-shadow: var(--shadow-small);
+        border: none;
+        background-color: var(--light-bg);
+        color: var(--text-color);
+    }
+    
+    .input-group-neumorphic .btn:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .input-group-neumorphic .btn:active {
+        box-shadow: var(--shadow-inset);
+    }
+    
+    /* Table Styling */
+    .table-neumorphic {
+        border-collapse: separate;
+        border-spacing: 0 10px;
+        margin-top: -10px;
+    }
+    
+    .table-neumorphic thead th {
+        background-color: transparent;
+        border: none;
+        color: var(--text-muted);
+        font-weight: 500;
+        font-size: 0.85rem;
+        padding: 12px 20px;
+        white-space: nowrap;
+    }
+    
+    .table-neumorphic tbody tr {
+        background-color: var(--light-bg);
+        box-shadow: var(--shadow-small);
+        border-radius: 12px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .table-neumorphic tbody tr:hover {
+        transform: translateY(-3px);
+        box-shadow: 10px 10px 20px rgba(200, 208, 231, 0.6), -10px -10px 20px rgba(255, 255, 255, 0.9);
+    }
+    
+    .table-neumorphic tbody td {
+        border: none;
+        padding: 16px 20px;
+        vertical-align: middle;
+        color: var(--text-color);
+    }
+    
+    .table-neumorphic tbody tr td:first-child {
+        border-top-left-radius: 12px;
+        border-bottom-left-radius: 12px;
+    }
+    
+    .table-neumorphic tbody tr td:last-child {
+        border-top-right-radius: 12px;
+        border-bottom-right-radius: 12px;
+    }
+    
+    /* Anggota Avatar */
+    .anggota-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background-color: var(--primary-color);
+        color: white;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 1.2rem;
+        margin-right: 1rem;
+        box-shadow: 4px 4px 8px rgba(108, 92, 231, 0.3), -2px -2px 6px rgba(255, 255, 255, 0.5);
+    }
+    
+    .anggota-name {
+        font-weight: 600;
+        color: var(--text-color);
+    }
+    
+    .anggota-details {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        margin-top: 3px;
+    }
+    
+    /* Badge Styling */
+    .badge.badge-neumorphic {
+        border-radius: var(--badge-radius);
+        padding: 5px 10px;
+        font-weight: 500;
+        font-size: 0.75rem;
+    }
+    
+    .badge.badge-neumorphic.badge-success {
+        background-color: var(--success-color);
+        box-shadow: 2px 2px 5px rgba(0, 184, 148, 0.3), -1px -1px 3px rgba(255, 255, 255, 0.1);
+    }
+    
+    .badge.badge-neumorphic.badge-secondary {
+        background-color: var(--text-muted);
+        box-shadow: 2px 2px 5px rgba(138, 148, 166, 0.3), -1px -1px 3px rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Action buttons */
+    .action-buttons .btn {
+        margin-right: 8px;
+        width: 36px;
+        height: 36px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+    }
+    
+    /* Empty state */
+    .empty-state {
+        text-align: center;
+        padding: 4rem 1rem;
+        color: var(--text-muted);
+        border-radius: var(--card-radius);
+        box-shadow: var(--shadow-inset);
+        margin: 15px;
+    }
+    
+    .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 1.5rem;
+        display: block;
+        color: var(--text-muted);
+        opacity: 0.6;
+    }
+    
+    /* Alert styling */
+    .alert-neumorphic {
+        border-radius: var(--card-radius);
+        border: none;
+        box-shadow: var(--shadow-small);
+        padding: 1rem 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .alert-neumorphic.alert-success {
+        background-color: rgba(0, 184, 148, 0.1);
+        color: var(--success-color);
+    }
+    
+    .alert-neumorphic.alert-danger {
+        background-color: rgba(214, 48, 49, 0.1);
+        color: var(--danger-color);
+    }
+    
+    .alert-neumorphic .btn-close {
+        filter: none;
+        opacity: 0.5;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h3 class="page-title">Kelola Anggota <span class="text-muted">- {{ ukm.nama }}</span></h3>
+
+    <!-- Pesan Flash -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-neumorphic alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Bar Kontrol: Pencarian & Filter -->
+    <div class="card neumorphic mb-4">
+        <div class="card-body py-3">
+            <div class="row g-3 align-items-center">
+                <div class="col-md-6 col-lg-4">
+                    <form method="get" action="">
+                        <div class="input-group input-group-neumorphic"> 
+                            <input type="text" class="form-control" name="q" placeholder="Cari nama atau NPM anggota..." value="{{ request.GET.q|default:'' }}">
+                            <button class="btn" type="submit" title="Cari"><i class="fas fa-search"></i></button>
+                            {% if request.GET.q %}
+                                <a href="{% url 'view_anggota' %}" class="btn" title="Hapus Filter"><i class="fas fa-times"></i></a>
+                            {% endif %}
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-6 col-lg-4 ms-auto">
+                    <form method="get" action="" id="filterForm">
+                        <div class="input-group input-group-neumorphic">
+                            <label class="input-group-text" for="statusFilter"><i class="fas fa-filter me-1"></i> Status</label>
+                            <select class="form-select" name="status" id="statusFilter" onchange="document.getElementById('filterForm').submit();">
+                                <option value="" {% if not request.GET.status or request.GET.status == '' %}selected{% endif %}>Semua</option>
+                                <option value="aktif" {% if request.GET.status == 'aktif' %}selected{% endif %}>Aktif</option>
+                                <option value="tidak_aktif" {% if request.GET.status == 'tidak_aktif' %}selected{% endif %}>Tidak Aktif</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Daftar Anggota -->
+    <div class="card neumorphic">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-users me-2"></i> Daftar Anggota</h5>
+        </div>
+        <div class="card-body p-0">
+            {% if anggota %}
+                <div class="table-responsive p-3">
+                    <table class="table table-neumorphic mb-0">
+                        <thead>
+                            <tr>
+                                <th scope="col" style="width: 40%;">Nama Anggota</th>
+                                <th scope="col">Bergabung</th>
+                                <th scope="col" class="text-center">Status</th>
+                                <th scope="col" class="text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for a in anggota %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="anggota-avatar">
+                                            {{ a.pendaftaran.mahasiswa.nama|slice:':1'|upper }}
+                                        </div>
+                                        <div>
+                                            <div class="anggota-name">{{ a.pendaftaran.mahasiswa.nama }}</div>
+                                            <div class="anggota-details">NPM: {{ a.pendaftaran.mahasiswa.nim }}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>{{ a.tanggal_bergabung|date:"d M Y" }}</td>
+                                <td class="text-center">
+                                    {% if a.status_aktif %}
+                                        <span class="badge badge-neumorphic badge-success">Aktif</span>
+                                    {% else %}
+                                        <span class="badge badge-neumorphic badge-secondary">Tidak Aktif</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center action-buttons">
+                                    <a href="{% url 'manage_anggota' a.id %}" class="btn btn-neumorphic btn-primary" title="Kelola Detail Anggota">
+                                        <i class="fas fa-user-edit"></i>
+                                    </a>
+                                    <a href="{% url 'view_or_start_conversation' target_user_id=a.pendaftaran.mahasiswa.user.id %}" class="btn btn-neumorphic btn-info" title="Lihat/Balas Percakapan">
+                                        <i class="fas fa-comments"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-user-slash"></i>
+                    <p>Belum ada anggota di UKM ini.</p>
+                </div>
+            {% endif %}
+        </div> <!-- /card-body -->
+    </div> <!-- /card -->
+
+</div> <!-- /container-fluid -->
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add smooth hover effects
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add animation class to buttons on hover
+        const buttons = document.querySelectorAll('.btn-neumorphic');
+        buttons.forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                this.style.transition = 'all 0.3s ease';
+            });
+        });
+        
+        // Add focus class to input on focus
+        const inputs = document.querySelectorAll('.form-control');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.closest('.input-group-neumorphic')?.classList.add('focused');
+            });
+            input.addEventListener('blur', function() {
+                this.closest('.input-group-neumorphic')?.classList.remove('focused');
+            });
+        });
+    });
+</script>
+{% endblock %}

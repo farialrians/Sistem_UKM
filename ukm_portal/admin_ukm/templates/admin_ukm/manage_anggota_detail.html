@@ -1,0 +1,322 @@
+{% extends 'base_admin.html' %}
+{% load static %}
+
+{% block title %}Detail Anggota - {{ anggota.pendaftaran.mahasiswa.nama }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --neu-background: #e0e5ec;
+        --neu-light-shadow: rgba(255, 255, 255, 0.7);
+        --neu-dark-shadow: rgba(163, 177, 198, 0.6);
+        --neu-flat: #eef0f4;
+        --neu-text-primary: #2d3748;
+        --neu-text-secondary: #718096;
+        --neu-accent: #6c5ce7;
+        --neu-accent-light: #a29bfe;
+        --neu-danger: #e53e3e;
+        --neu-success: #38a169;
+    }
+    
+    body {
+        background-color: var(--neu-background);
+    }
+    
+    .card-neu {
+        border-radius: 20px;
+        background: var(--neu-background);
+        box-shadow: 8px 8px 16px var(--neu-dark-shadow),
+                    -8px -8px 16px var(--neu-light-shadow);
+        border: none;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .card-neu-inset {
+        border-radius: 16px;
+        background: var(--neu-background);
+        box-shadow: inset 4px 4px 8px var(--neu-dark-shadow),
+                    inset -4px -4px 8px var(--neu-light-shadow);
+        padding: 1.5rem;
+    }
+    
+    .btn-neu {
+        border-radius: 12px;
+        padding: 0.6rem 1.2rem;
+        border: none;
+        background: var(--neu-background);
+        box-shadow: 5px 5px 10px var(--neu-dark-shadow),
+                    -5px -5px 10px var(--neu-light-shadow);
+        color: var(--neu-text-primary);
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+    
+    .btn-neu:hover {
+        box-shadow: 3px 3px 6px var(--neu-dark-shadow),
+                    -3px -3px 6px var(--neu-light-shadow);
+    }
+    
+    .btn-neu:active {
+        box-shadow: inset 3px 3px 6px var(--neu-dark-shadow),
+                    inset -3px -3px 6px var(--neu-light-shadow);
+    }
+    
+    .btn-neu-danger {
+        color: var(--neu-danger);
+    }
+    
+    .btn-neu-accent {
+        color: var(--neu-accent);
+    }
+    
+    .btn-neu-outline {
+        border-radius: 12px;
+        padding: 0.6rem 1.2rem;
+        border: none;
+        background: var(--neu-background);
+        box-shadow: 5px 5px 10px var(--neu-dark-shadow),
+                    -5px -5px 10px var(--neu-light-shadow);
+        color: var(--neu-text-secondary);
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+    .avatar-neu {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: var(--neu-background);
+        box-shadow: 6px 6px 12px var(--neu-dark-shadow),
+                    -6px -6px 12px var(--neu-light-shadow);
+        color: var(--neu-text-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 2.5rem;
+        margin: 0 auto 1.5rem;
+    }
+    
+    .divider-neu {
+        height: 3px;
+        border-radius: 1.5px;
+        margin: 1.8rem 0;
+        background: linear-gradient(to right, transparent, var(--neu-dark-shadow), transparent);
+    }
+    
+    .badge-neu {
+        border-radius: 50px;
+        padding: 0.5rem 1.2rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+    }
+    
+    .badge-neu-success {
+        background: var(--neu-background);
+        box-shadow: 3px 3px 6px var(--neu-dark-shadow),
+                    -3px -3px 6px var(--neu-light-shadow);
+        color: var(--neu-success);
+    }
+    
+    .badge-neu-inactive {
+        background: var(--neu-background);
+        box-shadow: 3px 3px 6px var(--neu-dark-shadow),
+                    -3px -3px 6px var(--neu-light-shadow);
+        color: var(--neu-text-secondary);
+    }
+    
+    .section-title {
+        color: var(--neu-text-secondary);
+        font-weight: 600;
+        margin-bottom: 1.2rem;
+        letter-spacing: 0.5px;
+        position: relative;
+        display: inline-block;
+    }
+    
+    .section-title:after {
+        content: '';
+        position: absolute;
+        width: 60%;
+        height: 3px;
+        bottom: -8px;
+        left: 0;
+        background: linear-gradient(to right, var(--neu-accent-light), transparent);
+        border-radius: 1.5px;
+    }
+
+    dt {
+        font-weight: 600;
+        color: var(--neu-text-secondary);
+        margin-bottom: 0.5rem;
+    }
+    
+    dd {
+        margin-bottom: 1.2rem;
+        color: var(--neu-text-primary);
+        font-weight: 500;
+    }
+    
+    .info-row {
+        border-radius: 12px;
+        padding: 0.8rem 1rem;
+        margin-bottom: 0.8rem;
+        background: var(--neu-background);
+        box-shadow: inset 3px 3px 6px var(--neu-dark-shadow),
+                    inset -3px -3px 6px var(--neu-light-shadow);
+    }
+
+    .alert-neu {
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        background: var(--neu-background);
+        box-shadow: inset 3px 3px 6px var(--neu-dark-shadow),
+                    inset -3px -3px 6px var(--neu-light-shadow);
+    }
+    
+    .alert-neu-success {
+        border-left: 4px solid var(--neu-success);
+    }
+    
+    .alert-neu-danger {
+        border-left: 4px solid var(--neu-danger);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="mb-4 d-flex justify-content-between align-items-center">
+        <h3 class="text-neu-primary mb-0">Detail Anggota UKM <span style="color: var(--neu-text-secondary); font-weight: 400;">- {{ ukm.nama }}</span></h3>
+        <a href="{% url 'view_anggota' %}" class="btn-neu-outline">
+            <i class="fas fa-arrow-left me-2"></i> Kembali ke Daftar
+        </a>
+    </div>
+
+    <!-- Pesan Flash -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert-neu {% if message.tags == 'success' %}alert-neu-success{% elif message.tags == 'error' %}alert-neu-danger{% endif %}">
+                {{ message }}
+                <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="card-neu">
+        <div class="row">
+            <!-- Kolom Kiri: Avatar & Info Kunci -->
+            <div class="col-md-4 col-lg-3 text-center mb-4 mb-md-0">
+                <div class="avatar-neu">
+                    {{ anggota.pendaftaran.mahasiswa.nama|slice:':1'|upper }}
+                </div>
+                <h4 style="color: var(--neu-text-primary); font-weight: 700;">{{ anggota.pendaftaran.mahasiswa.nama }}</h4>
+                <p style="color: var(--neu-text-secondary); font-weight: 500;">NIM: {{ anggota.pendaftaran.mahasiswa.nim }}</p>
+                <div class="my-3">
+                    {% if anggota.status_aktif %}
+                        <span class="badge-neu badge-neu-success">
+                            <i class="fas fa-check-circle me-2"></i> Aktif
+                        </span>
+                    {% else %}
+                        <span class="badge-neu badge-neu-inactive">
+                            <i class="fas fa-times-circle me-2"></i> Tidak Aktif
+                        </span>
+                    {% endif %}
+                </div>
+                
+                <div class="mt-4 px-2">
+                    <a href="{% url 'view_or_start_conversation' target_user_id=anggota.pendaftaran.mahasiswa.user.id %}" class="btn-neu btn-neu-accent d-block">
+                        <i class="fas fa-comments me-2"></i> Lihat/Balas Percakapan
+                    </a>
+                </div>
+            </div>
+
+            <!-- Kolom Kanan: Detail Lengkap -->
+            <div class="col-md-8 col-lg-9 ps-md-4">
+                <h5 class="section-title">Informasi Akademik & Kontak</h5>
+                <div class="card-neu-inset mt-3">
+                    <div class="row info-row">
+                        <div class="col-sm-3">
+                            <span style="color: var(--neu-text-secondary);">Fakultas</span>
+                        </div>
+                        <div class="col-sm-9">
+                            <span style="color: var(--neu-text-primary); font-weight: 500;">{{ anggota.pendaftaran.mahasiswa.fakultas }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="row info-row">
+                        <div class="col-sm-3">
+                            <span style="color: var(--neu-text-secondary);">Angkatan</span>
+                        </div>
+                        <div class="col-sm-9">
+                            <span style="color: var(--neu-text-primary); font-weight: 500;">{{ anggota.pendaftaran.mahasiswa.angkatan }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="row info-row">
+                        <div class="col-sm-3">
+                            <span style="color: var(--neu-text-secondary);">Email</span>
+                        </div>
+                        <div class="col-sm-9">
+                            <a href="mailto:{{ anggota.pendaftaran.mahasiswa.email }}" style="color: var(--neu-accent); text-decoration: none; font-weight: 500;">
+                                {{ anggota.pendaftaran.mahasiswa.email }}
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="row info-row">
+                        <div class="col-sm-3">
+                            <span style="color: var(--neu-text-secondary);">No. Telepon</span>
+                        </div>
+                        <div class="col-sm-9">
+                            <span style="color: var(--neu-text-primary); font-weight: 500;">{{ anggota.pendaftaran.nomor_telepon|default:"-" }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider-neu"></div>
+                
+                <h5 class="section-title">Informasi Keanggotaan</h5>
+                <div class="card-neu-inset mt-3">
+                    <div class="row info-row">
+                        <div class="col-sm-3">
+                            <span style="color: var(--neu-text-secondary);">Bergabung Sejak</span>
+                        </div>
+                        <div class="col-sm-9">
+                            <span style="color: var(--neu-text-primary); font-weight: 500;">{{ anggota.tanggal_bergabung|date:"d F Y" }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="row info-row">
+                        <div class="col-sm-3">
+                            <span style="color: var(--neu-text-secondary);">Status</span>
+                        </div>
+                        <div class="col-sm-9">
+                            <span style="color: var(--neu-text-primary); font-weight: 500;">{{ anggota.status_aktif|yesno:"Aktif,Tidak Aktif" }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider-neu"></div>
+                
+                <h5 class="section-title">Aksi Berbahaya</h5>
+                <div class="card-neu-inset mt-3 p-4">
+                    <form method="post" onsubmit="return confirm('PERINGATAN! Menghapus anggota bersifat permanen dan tidak dapat dibatalkan. Anda yakin ingin melanjutkan?');">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="hapus">
+                        <button type="submit" class="btn-neu btn-neu-danger">
+                            <i class="fas fa-trash-alt me-2"></i> Hapus Keanggotaan Ini
+                        </button>
+                    </form>
+                    <small style="color: var(--neu-text-secondary); display: block; margin-top: 1rem;">
+                        Menghapus keanggotaan tidak akan menghapus data pendaftaran asli.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
